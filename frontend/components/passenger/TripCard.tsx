@@ -115,7 +115,7 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
                 isUrgent
                   ? 'bg-brand text-white'
                   : isPriority
-                    ? 'bg-brand/10 text-brand border border-brand/20'
+                    ? 'bg-brand-surface text-brand border border-brand-edge'
                     : 'bg-app-milk text-app-granite hover:bg-app-cloud'
               }
             `}

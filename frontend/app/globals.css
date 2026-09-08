@@ -27,6 +27,18 @@
   --brand-hover: #083c6e;
   --brand-active: #062b4f;
   --brand-contrast: #ffffff;
+  /* Tints of the brand, for highlight surfaces and subtle borders.
+     These exist because Tailwind CANNOT build them: an opacity modifier
+     (`bg-brand` + a slash + a number) needs an alpha channel to compose onto,
+     and `brand` is a bare `var(--brand)`, so Tailwind silently emits no rule
+     at all. That is not theoretical — the Fundservice entry point in the
+     profile and the priority chip on TripCard both shipped that way and
+     rendered fully transparent.
+     Derived with color-mix so a tenant only ever sets --brand and these
+     follow; never restate a tint as a literal. */
+  --brand-surface: color-mix(in srgb, var(--brand) 10%, transparent);
+  --brand-surface-hover: color-mix(in srgb, var(--brand) 15%, transparent);
+  --brand-edge: color-mix(in srgb, var(--brand) 20%, transparent);
   --font-brand: 'Inter';
 
   /* Neutrals */
@@ -62,6 +74,10 @@
      text on a light surface. #007A30 is 5.49:1 either way. Fills are
      unaffected in kind — the status dots only ever needed the 3:1 floor. */
   --app-success: #007a30;
+  /* Same reason as --brand-surface: an opacity modifier on a bare var()
+     emits nothing, so the tinted circle in the report confirmation was
+     invisible. Derived, never restated. */
+  --app-success-surface: color-mix(in srgb, var(--app-success) 10%, transparent);
   --app-warning: #ffab00;
   --app-error: #eb0000;
   --app-info: #2d327d;

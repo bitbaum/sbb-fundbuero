@@ -140,7 +140,7 @@ function ProfilTab({ onOpenFundservice }: ProfilTabProps) {
           {onOpenFundservice && (
             <button
               onClick={onOpenFundservice}
-              className="w-full p-3 bg-brand/10 rounded-app-md flex items-center gap-3 hover:bg-brand/15 transition-colors"
+              className="w-full p-3 bg-brand-surface rounded-app-md flex items-center gap-3 hover:bg-brand-surface-hover transition-colors"
             >
               <span className="text-xl">🧳</span>
               <div className="flex-1 text-left">

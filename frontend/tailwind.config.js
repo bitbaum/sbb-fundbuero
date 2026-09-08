@@ -24,6 +24,11 @@ module.exports = {
           hover: 'var(--brand-hover)',
           active: 'var(--brand-active)',
           contrast: 'var(--brand-contrast)',
+          // Tint surfaces. Use these instead of `bg-brand/10`-style opacity
+          // modifiers, which this config cannot support — see globals.css.
+          surface: 'var(--brand-surface)',
+          'surface-hover': 'var(--brand-surface-hover)',
+          edge: 'var(--brand-edge)',
         },
         app: {
           white: 'var(--app-white)',
@@ -45,6 +50,7 @@ module.exports = {
           black: 'var(--app-black)',
           blue: 'var(--app-blue)',
           success: 'var(--app-success)',
+          'success-surface': 'var(--app-success-surface)',
           warning: 'var(--app-warning)',
           error: 'var(--app-error)',
           info: 'var(--app-info)',
