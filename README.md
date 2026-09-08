@@ -109,12 +109,14 @@ Read this before believing anything the running demo appears to do.
 | Staff notification UI | **Implemented** |
 | Passenger → staff handoff in the live demo | **Fixture.** `lib/demo-bus.ts` passes reports between the two views through the browser's own storage. No server is involved. |
 | All data on the deployed site | **Fixture.** `lib/mock-data.ts`. The deployed build has no backend configured, so demo mode is on and declared. |
-| Backend | **Half done.** The four Express services are deleted and the database layer is real; the route handlers that connect the UI to it are not written yet, so the UI still runs on fixtures. |
-| Recording a **found** item | **Does not exist.** `found_items` is in the schema and queried by the matcher, but nothing anywhere inserts into it. |
-| Matching | **Does not exist** in any useful sense — it queries a permanently empty table. Being rebuilt identifier-first. |
+| Backend API | **Implemented and exercised against a live database.** Route handlers under `app/api`, SSE for staff push. |
+| Staff authentication | **Implemented, and deliberately minimal.** A single shared token, checked server-side, failing closed. Not per-person accounts — see `TODO.md`. |
+| The UI calling that API | **Not yet.** The pages still render fixtures; wiring them up is the next piece of work. |
+| Recording a **found** item | **Implemented.** `POST /api/found-items`, staff only. This is the half of a lost-and-found that previously had no write path at all. |
+| Matching | **Implemented**, identifier-first, with the score breakdown persisted. Candidates come from identifiers, journey or line — never from description. |
 | Claiming an item | **Does not exist.** No challenge, no ownership check. |
 | Photo upload | **Does not exist.** The API validates image *URLs the client must already host*. There is no storage. |
-| Staff authentication | **Does not exist.** `/staff` is open to anyone with the URL. |
+
 | Database schema | **Implemented.** Drizzle migrations, 14 tables, identifier-first. Deny-by-default grants verified live against a real Postgres. |
 | Real trip data | **Not yet imported.** The schema and the verified sources are ready; the importer is not written. |
 | de / fr / it / en | **Assumption, not implemented.** One locale today. |
@@ -262,12 +264,26 @@ pnpm run db:seed       # fixtures, every row prefixed DEMO- / demo:
 That gives you a real schema with real data in it, on a clean machine, in
 three commands.
 
-⚠️ **Be precise about what that does and does not mean.** The database is real
-and the domain logic is real, but **the UI is not connected to either yet** —
-there are no route handlers, so the app still renders fixtures from
-`lib/mock-data.ts` regardless of whether Postgres is running. Wiring them up is
-the next piece of work, and until it lands, seeing data in the browser is not
-evidence that the database is being read.
+Then, with `STAFF_ACCESS_TOKEN` set to something at least 16 characters long:
+
+```bash
+# file a report — no account, no login
+curl -X POST localhost:3005/api/reports -H 'content-type: application/json' \
+  -d '{"category":"electronics","description":"Schwarzes Handy",
+       "identifiers":[{"kind":"imei","value":"49 015420 323751 8"}],
+       "contact":{"email":"you@example.invalid"}}'
+
+# which train was I on? — a stop and a time, no train number
+curl "localhost:3005/api/trips/suggest?stopId=demo:stop:zurich-hb&at=<ISO time>"
+
+# the crew stream
+curl -N -H "x-staff-token: $STAFF_ACCESS_TOKEN" localhost:3005/api/events
+```
+
+⚠️ **Be precise about what that does and does not mean.** The API is real and
+was exercised against a live database. **The UI is not yet calling it** — the
+pages still render fixtures from `lib/mock-data.ts`, so seeing data in the
+browser is not evidence that any of this ran.
 
 The seed is deliberately conspicuous: `DEMO-F-0001` shares an IMEI with
 `DEMO-R-0001` and must outrank `DEMO-F-0002`, which agrees only on words. That

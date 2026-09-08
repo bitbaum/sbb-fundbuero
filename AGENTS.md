@@ -39,18 +39,25 @@ not a replacement for it and must never be described as one.
    done the dishonest version before — see "The fallback that could not fail"
    below.
 3. **Never let a description-similarity score outrank an identifier or a trip
-   match.** See "Matching is identifier-first".
-4. **Never make found-item details public.** A public listing naming a recovered
+   match.** See "Matching is identifier-first". This includes CANDIDATE
+   SELECTION: `lib/server/matching-service.ts` finds candidates by identifier,
+   journey or line only. Fetching every item of the same category and ranking
+   it by word overlap is how a matcher ends up confidently sorting a thousand
+   black umbrellas.
+4. **Never put personal data in a staff event payload.** `/api/events` goes to
+   every connected crew device; it carries a reference, a category and a
+   location, never a description, a contact detail or an identifier value.
+5. **Never make found-item details public.** A public listing naming a recovered
    phone is a shopping list.
-5. **Never add a reward or payment field.** A Swiss transport operator is
+6. **Never add a reward or payment field.** A Swiss transport operator is
    legally barred from claiming a finder's reward (VPB Art. 77 Abs. 2, SR
    745.11), and offering money for prosocial behaviour is a well-documented way
    to reduce it (Frey & Oberholzer-Gee 1997).
-6. **Never hardcode an operator's name outside the tenant SSOT.** `pnpm run
+7. **Never hardcode an operator's name outside the tenant SSOT.** `pnpm run
    check:tenant` fails the build if you do.
-7. **Never cache personal data in a service worker.** Offline queueing is fine;
+8. **Never cache personal data in a service worker.** Offline queueing is fine;
    persisting someone's contact details on a shared phone is not.
-8. **Never commit with `pnpm run verify` red.**
+9. **Never commit with `pnpm run verify` red.**
 
 ---
 
@@ -125,6 +132,25 @@ Legal basis: items found on transport premises must be handed to staff (ZGB Art.
 720 Abs. 3, SR 210); the operator counts as finder but may claim no finder's
 reward, must notify a known loser, and may auction after three months — one
 month if the item is worth ≤ CHF 50 (VPB Art. 77, SR 745.11).
+
+### Staff routes fail closed
+
+`lib/server/auth.ts` checks a single shared secret on every staff route. With
+`STAFF_ACCESS_TOKEN` unset it returns 503 and refuses — never "nothing is
+configured, so allow everything", which is how `/staff` came to be readable by
+anyone with the URL. It is not per-person authentication and does not claim to
+be; `TODO.md` carries accounts as the remaining work.
+
+503 rather than 401 when unconfigured, on purpose: the caller did nothing wrong
+and a different token will not help.
+
+### Staff push is SSE, and the bus is in-process
+
+One direction, plain HTTP, browser-owned reconnect. The limit is stated rather
+than discovered later: the event bus is an `EventEmitter` in the process, so
+two app processes would each notify only their own subscribers. That is fine
+for one systemd unit on one box, and it is the first thing to change if that
+stops being true — at which point a broker earns its place, and not before.
 
 ### The fallback that could not fail
 
@@ -222,3 +248,13 @@ de, fr, it, en. Switzerland is quadrilingual and the schema already anticipates
 it. `lib/labels.ts` is the SSOT for UI text but currently holds one
 locale — it is a single-language SSOT, not i18n. No hardcoded strings in
 components either way.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
