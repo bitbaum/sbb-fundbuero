@@ -25,8 +25,8 @@ Entry template
   - services/reporting/src/config/database.ts (typed client PID access)
   - services/reporting/src/index.ts (Redis subscribe signature, typed callback)
 - Commands:
-  - npm run build --workspace=@sbb-lost-found/types → OK
-  - npm run build --workspace=@sbb-lost-found/reporting-service → OK
+  - npm run build --workspace=@sbb-fundbuero/types → OK
+  - npm run build --workspace=@sbb-fundbuero/reporting-service → OK
 - Notes/Asks: Other services likely scaffolded; can fix/build if needed. Logging writes to `logs/`.
 
 ## 2025-09-28T15:54:00Z — Agent: Codex
@@ -83,7 +83,7 @@ Entry template
 - Summary: API testing successful - all endpoints working correctly with Codex's improvements
 - Changes: N/A (testing only)
 - Commands:
-  - DATABASE_URL="postgresql://postgres:postgres@localhost:5433/sbb_lost_found" npm start → ✅ Service starts successfully
+  - DATABASE_URL="postgresql://postgres:postgres@localhost:5433/sbb_fundbuero" npm start → ✅ Service starts successfully
   - curl http://localhost:3001/health → ✅ {"status":"healthy","service":"reporting-service"}
   - curl POST /api/lost-items → ✅ Properly rejects invalid JWT with {"success":false,"error":{"code":"INVALID_TOKEN"}}
   - curl GET /api/lost-items/search → ✅ Returns {"success":true,"data":[],"pagination":{"total":0,"limit":5,"offset":0}}
@@ -173,7 +173,7 @@ JWT_SECRET=\nNone\nNext: Final handoff - All JWT testing complete, ho command wo
 ## 2025-09-28T15:12:17Z — Agent: Codex
 - Summary: CLAIMED + SCAFFOLDED: Notification service (WS relay + Redis sub)
 - Changes: services/notification/**/*, new tsconfig + src
-- Commands: Built @sbb-lost-found/notification-service successfully (tsc)
+- Commands: Built @sbb-fundbuero/notification-service successfully (tsc)
 - Notes/Asks: Expose /health; subscribes driver_notification/lost_item_created/lost_item_status_updated and relays via WebSocket. Next: add minimal REST endpoints and docker-compose profile if needed.
 
 ## 2025-09-28T15:23:25Z — Agent: Codex
@@ -191,7 +191,7 @@ JWT_SECRET=\nNone\nNext: Final handoff - All JWT testing complete, ho command wo
 ## 2025-09-28T15:28:32Z — Agent: Codex
 - Summary: CLAIMED + SCAFFOLDED: Matching service (basic scoring, recompute event)
 - Changes: services/matching/**/*, new tsconfig + src
-- Commands: Built @sbb-lost-found/matching-service successfully (tsc)
+- Commands: Built @sbb-fundbuero/matching-service successfully (tsc)
 - Notes/Asks: Endpoints: GET /api/matches/:lostItemId?limit=10, POST /api/matches/:lostItemId/recompute (publishes item_matched). Next: add indexes + refine scoring or vector integration later.
 
 ## 2025-09-28T15:43:57Z — Agent: Codex
@@ -253,7 +253,7 @@ JWT_SECRET=\nActive locks:
 ## 2025-09-28T17:06:33Z — Agent: Codex
 - Summary: CLAIMED + SCAFFOLDED: API Gateway (proxy + healthz)
 - Changes: services/api-gateway/**/*, scripts/smoke-gateway.sh, Makefile target
-- Commands: Built @sbb-lost-found/api-gateway successfully (tsc)
+- Commands: Built @sbb-fundbuero/api-gateway successfully (tsc)
 - Notes/Asks: Proxies: /reporting, /matching, /notifications; aggregated /healthz using fetch. Next: Compose validation and docs.
 
 ## 2025-09-28T17:10:58Z — Agent: Claude Code
@@ -282,7 +282,7 @@ DB_PORT=
 DB_NAME=
 REDIS_URL=
 JWT_SECRET=\nActive locks:
-- services_notification.lock: agent=Codex area=services/notification eta=30m claimed_at=2025-09-28T15:10:40Z \nNext: Time-sensitive Lost & Found system complete - 3 scenarios implemented with smart UX adaptation
+- services_notification.lock: agent=Codex area=services/notification eta=30m claimed_at=2025-09-28T15:10:40Z \nNext: Time-sensitive Fundbüro system complete - 3 scenarios implemented with smart UX adaptation
 
 ## 2025-09-28T18:30:54Z — Agent: Codex
 - Summary: Gateway scaffold + docs; queue updated

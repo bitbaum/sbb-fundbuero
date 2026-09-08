@@ -35,7 +35,7 @@ importers:
 
   services/api-gateway:
     dependencies:
-      '@sbb-lost-found/types':
+      '@sbb-fundbuero/types':
         specifier: workspace:*
         version: link:../../shared/types
       cors:
@@ -75,7 +75,7 @@ importers:
 
   services/matching:
     dependencies:
-      '@sbb-lost-found/types':
+      '@sbb-fundbuero/types':
         specifier: workspace:*
         version: link:../../shared/types
       cors:
@@ -121,7 +121,7 @@ importers:
 
   services/notification:
     dependencies:
-      '@sbb-lost-found/types':
+      '@sbb-fundbuero/types':
         specifier: workspace:*
         version: link:../../shared/types
       cors:
@@ -164,7 +164,7 @@ importers:
 
   services/reporting:
     dependencies:
-      '@sbb-lost-found/types':
+      '@sbb-fundbuero/types':
         specifier: workspace:*
         version: link:../../shared/types
       bcrypt:

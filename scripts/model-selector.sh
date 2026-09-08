@@ -7,7 +7,7 @@ set -euo pipefail
 TASK="${1:-}"
 REPO_ROOT=$(cd "$(dirname "$0")"/.. && pwd)
 
-echo "🤖 AI Model Selection Helper for SBB Lost & Found"
+echo "🤖 AI Model Selection Helper for SBB Fundbüro"
 echo "=============================================="
 
 if [[ -z "$TASK" ]]; then

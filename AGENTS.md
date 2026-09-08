@@ -64,8 +64,8 @@ Structure
 - `pnpm run clean`: Remove build artifacts per workspace
 
 Workspace‑scoped (examples)
-- `pnpm --filter @sbb-lost-found/types run build`
-- `pnpm --filter @sbb-lost-found/reporting-service run build`
+- `pnpm --filter @sbb-fundbuero/types run build`
+- `pnpm --filter @sbb-fundbuero/reporting-service run build`
 
 Docker/K8s
 - `pnpm run docker:build` | `pnpm run docker:up` | `pnpm run docker:down`
@@ -113,9 +113,9 @@ Option A: Full stack via Compose
 Option B: Run reporting service only
 - Start Postgres + Redis locally (or via Compose) 
 - Export env: `DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, REDIS_URL, PORT`
-- Build deps: `pnpm --filter @sbb-lost-found/types run build`
-- Build service: `pnpm --filter @sbb-lost-found/reporting-service run build`
-- Dev: `pnpm --filter @sbb-lost-found/reporting-service run dev`
+- Build deps: `pnpm --filter @sbb-fundbuero/types run build`
+- Build service: `pnpm --filter @sbb-fundbuero/reporting-service run build`
+- Dev: `pnpm --filter @sbb-fundbuero/reporting-service run dev`
 - Health: `GET /health`, Docs: `GET /docs`
 
 ## Design System
@@ -178,14 +178,14 @@ All design tokens live in `app/globals.css` only. Tailwind config MUST reference
   - Unit tests near source or in `__tests__` (service preference)
   - Name: `*.test.ts` or `*.spec.ts`
 - Commands
-  - `pnpm --filter @sbb-lost-found/reporting-service run test`
+  - `pnpm --filter @sbb-fundbuero/reporting-service run test`
 - Add regression tests for fixed bugs; keep tests fast and isolated
 
 ## Database
 - Local dev DB initialized by Compose via `database/init`
 - Reporting service scripts
-  - `pnpm --filter @sbb-lost-found/reporting-service run db:migrate`
-  - `pnpm --filter @sbb-lost-found/reporting-service run db:seed`
+  - `pnpm --filter @sbb-fundbuero/reporting-service run db:migrate`
+  - `pnpm --filter @sbb-fundbuero/reporting-service run db:seed`
 - Use proper indexing for new queries (follow existing schema patterns)
 
 ## Common Tasks
@@ -199,11 +199,11 @@ All design tokens live in `app/globals.css` only. Tailwind config MUST reference
   - Subscribe in service startup and broadcast via Socket.IO as needed
 - Extend data contracts
   - Update `shared/types/src/index.ts`
-  - Rebuild `@sbb-lost-found/types`, then services
+  - Rebuild `@sbb-fundbuero/types`, then services
 
 ## Troubleshooting
 - TypeScript build breaks in reporting
-  - Ensure `@sbb-lost-found/types` is built first
+  - Ensure `@sbb-fundbuero/types` is built first
   - Redis subscribe signature: use array of channels and typed callback
 - DB/Redis connection issues
   - Verify `DB_*` and `REDIS_URL`; check Compose health

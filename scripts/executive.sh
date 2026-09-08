@@ -6,7 +6,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")"/.. && pwd)
 
-echo "Project: SBB Lost & Found — Executive Update"
+echo "Project: SBB Fundbüro — Executive Update"
 echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ) UTC"
 echo
 
@@ -19,7 +19,7 @@ echo
 # Services build status (static; assumes tsc compiled previously)
 echo "== Services Build Status =="
 for svc in reporting matching notification; do
-  if [[ -d "$ROOT/services/$svc/dist" ]] || rg -n "@sbb-lost-found/$svc" "$ROOT/package.json" -S >/dev/null 2>&1; then
+  if [[ -d "$ROOT/services/$svc/dist" ]] || rg -n "@sbb-fundbuero/$svc" "$ROOT/package.json" -S >/dev/null 2>&1; then
     echo "- $svc: build artifacts present or workspace configured"
   else
     echo "- $svc: not built"

@@ -1,5 +1,5 @@
 /**
- * Lost & Found — TypeScript type definitions
+ * Fundbüro — TypeScript type definitions
  * Single Source of Truth for all data types
  */
 

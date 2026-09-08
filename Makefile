@@ -70,7 +70,7 @@ ho:
 # Run API Gateway in dev mode on a custom port
 # Usage: make dev-gateway PORT=3010 RURL=http://localhost:3001 MURL=http://localhost:3002 NURL=http://localhost:3003
 dev-gateway:
-	@PORT="$(PORT)" REPORTING_SERVICE_URL="$(RURL)" MATCHING_SERVICE_URL="$(MURL)" NOTIFICATION_SERVICE_URL="$(NURL)" npm run dev --workspace=@sbb-lost-found/api-gateway
+	@PORT="$(PORT)" REPORTING_SERVICE_URL="$(RURL)" MATCHING_SERVICE_URL="$(MURL)" NOTIFICATION_SERVICE_URL="$(NURL)" npm run dev --workspace=@sbb-fundbuero/api-gateway
 
 executive:
 	@./scripts/executive.sh

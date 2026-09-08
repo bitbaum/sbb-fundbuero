@@ -1,7 +1,7 @@
 {
-  "name": "@sbb-lost-found/api-gateway",
+  "name": "@sbb-fundbuero/api-gateway",
   "version": "1.0.0",
-  "description": "API Gateway for SBB Lost and Found system",
+  "description": "API Gateway for SBB Fundbüro system",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -12,7 +12,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sbb-lost-found/types": "workspace:*",
+    "@sbb-fundbuero/types": "workspace:*",
     "cors": "^2.8.6",
     "express": "^4.18.0",
     "helmet": "^8.3.0",

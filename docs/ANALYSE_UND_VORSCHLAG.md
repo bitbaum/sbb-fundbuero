@@ -198,7 +198,7 @@ Nutzer-Reisehistorie → Fahrzeug identifizieren → Mitarbeiter-App-Benachricht
 - Öffnet lostandfound.sbb.ch mit Parametern vorausgefüllt
 
 **Eigenständige App-Ansatz**:
-- "FundHelfer" / "SwissTransport Lost & Found"
+- "FundHelfer" / "SwissTransport Fundbüro"
 - Manuelle Eingabe von Zug/Zeit oder automatisch via Standortverlauf
 - Einheitliches Interface für SBB, VBZ, ZVV, BLT, etc.
 - Ein Formular → leitet zum korrekten Betreiber-System

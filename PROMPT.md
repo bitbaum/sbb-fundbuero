@@ -6,7 +6,7 @@
 
 ## Context
 
-- **Project**: SBB Lost & Found - Multi-agent monorepo
+- **Project**: SBB Fundbüro - Multi-agent monorepo
 - **Agents**: Multiple AI models via Cursor IDE
 - **Coordination**: `AGENTS_SYNC.md`, `TASK_QUEUE.md`
 - **Key Docs**: See `AGENTS.md`, `CLAUDE.md`

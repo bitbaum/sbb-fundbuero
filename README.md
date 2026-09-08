@@ -1,4 +1,4 @@
-# SBB Lost & Found
+# SBB Fundbüro
 
 Real-time lost item recovery for Swiss public transport. Connects passengers with train staff while the item is still on board.
 
@@ -160,8 +160,8 @@ Official SBB corporate identity -- not approximated, implemented from their desi
 ### Setup
 
 ```bash
-git clone https://github.com/bitbaum/sbb-lost-found.git
-cd sbb-lost-found
+git clone https://github.com/bitbaum/sbb-fundbuero.git
+cd sbb-fundbuero
 
 # Option A: Docker (recommended)
 docker compose up -d              # PostgreSQL + Redis + services

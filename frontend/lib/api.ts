@@ -1,5 +1,5 @@
 /**
- * API client for the Lost & Found backend
+ * API client for the Fundbüro backend
  *
  * SSOT for all API calls. Supports:
  * - Real backend when available

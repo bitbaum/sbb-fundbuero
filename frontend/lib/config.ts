@@ -14,7 +14,7 @@
  * values inlined into the browser bundle, so a `|| 'http://localhost:3001'`
  * default does not mean "try the dev backend" — it means every visitor's
  * browser aims the request at port 3001 of *their own machine*. That is what
- * sbb.orangecat.ch shipped until this change: doomed requests, and a real
+ * sbbfundbuero.orangecat.ch shipped until this change: doomed requests, and a real
  * chance of hitting whatever unrelated app a developer happens to run there.
  *
  * Unset therefore means exactly what it says: no backend is reachable from this

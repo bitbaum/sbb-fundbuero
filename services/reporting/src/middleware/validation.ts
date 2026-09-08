@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
-import { ItemCategory, ItemStatus } from '@sbb-lost-found/types';
+import { ItemCategory, ItemStatus } from '@sbb-fundbuero/types';
 import { logger } from '../utils/logger';
 
 const createLostItemSchema = Joi.object({
