@@ -1,228 +1,220 @@
-# AGENTS.md (Multi-Model Development)
+# AGENTS.md — SBB Fundbüro
 
-Operational guide for working on this monorepo with multiple AI coding agents including Cursor IDE models.
+@~/.claude/CLAUDE.md
 
-## Coordination
-- Shared activity log: `AGENTS_SYNC.md` (append-only; actions, commands, results).
-- Task list: `TASK_QUEUE.md` (prioritized; update owner/status inline).
-- Claims/locks: use `scripts/claim.sh <area> "summary"` to avoid collisions.
-- Smoke checks: run `scripts/smoke.sh [base_url]` and include output in log entries.
-- Keep entries concise and timestamped; do not rewrite history.
+Working guide for this repository. `CLAUDE.md` is a symlink to this file; there
+is one copy, not three.
 
-## 🤖 Available AI Agents
+This file records **decisions that are load-bearing** — the ones where doing the
+obvious thing instead would quietly break something — and a **must-not-do list**.
+It is not a tour of the codebase; read the code for that.
 
-This project leverages multiple AI coding models through Cursor IDE for different specialized tasks:
+---
 
-### **Cursor Models Available**
-- **Code-Supernova-1-Million** - Advanced reasoning, massive context window, next-gen Claude capabilities
-- **Grok Code** - Fast, practical coding with real-time web access and current knowledge
-- **Claude Code** - Balanced coding assistant with strong TypeScript/Node.js expertise
-- **Other Models** - Cursor continuously updates with latest models (GPT-4, etc.)
+## What this is, honestly
 
-### **Agent Selection Guide**
-- **Complex Architecture & System Design** → Code-Supernova-1-Million (massive context)
-- **API Integration & Database Work** → Claude Code (TypeScript expertise)
-- **Quick Fixes & Current Tech Updates** → Grok Code (real-time knowledge)
-- **Frontend & UI Development** → Choose model with strong web dev capabilities
-- **DevOps & Infrastructure** → Model with strong shell/systems knowledge
+A **concept**, not an operational service. A passenger reports a loss while
+still on the train; staff are notified in real time and can search before the
+vehicle reaches the depot.
 
-### **Handoff Protocol**
-- Use `make handoff AGENT=<model> NEXT="<description>" BASE_URL=<url>`
-- Include current context, recent changes, and next steps in handoff
-- Update TASK_QUEUE.md with new owner and ETA
-- Test handoffs work smoothly between agents
+The repository is mid-rebuild. `TODO.md` is the authority on what is a launch
+blocker and what is not. `README.md` is the authority on which parts are
+implemented, which are fixtures, and which are assumptions.
 
-## Overview
-- Microservices monorepo (Node.js/TypeScript) with a pnpm workspace.
-- Event‑driven via Redis pub/sub; PostgreSQL as primary DB.
-- Real‑time updates with Socket.IO; OpenAPI docs via Swagger UI.
+**SBB already runs a lost-property service.** RUBICON's Nova Find has run it
+since 2004, it returns roughly 60% of handed-in items, and it already
+re-matches open loss reports against later finds automatically. This project is
+not a replacement for it and must never be described as one.
 
-Structure
-- `services/`
-  - `api-gateway/` (port 3000)
-  - `reporting/` (port 3001)
-  - `matching/` (port 3002)
-  - `notification/` (port 3003)
-- `shared/`
-  - `types/` (TypeScript types)
-  - `utils/` (shared utilities, if present)
-- `database/` init assets for local Postgres
-- `k8s/` manifests
+---
 
-## Prerequisites
-- Node >= 20, pnpm 11
-- Docker + Docker Compose (for full stack)
-- Local Postgres and Redis OR use Compose services
+## Must not do
 
-## Core Commands (run in repo root)
-- `pnpm install`: Install all workspace deps
-- `pnpm run build`: Build all workspaces
-- `pnpm run dev`: `docker-compose up -d` then start all workspaces in dev
-- `pnpm test`: Run tests (reporting service + frontend)
-- `pnpm run lint`: Lint across workspaces (where configured)
-- `pnpm run typecheck`: TypeScript `--noEmit` across workspaces
-- `pnpm run clean`: Remove build artifacts per workspace
+1. **Never state a number without a citable source.** Not in the README, not in
+   the UI, not in a commit message. If it cannot be sourced, label it an
+   assumption in the same sentence. Three fabricated statistics survived in this
+   README for months because nobody made this rule explicit.
+2. **Never mock an integration so that it looks live.** A fixture labelled as a
+   fixture is honest. A mock that renders as real data is not. This repo has
+   done the dishonest version before — see "The fallback that could not fail"
+   below.
+3. **Never let a description-similarity score outrank an identifier or a trip
+   match.** See "Matching is identifier-first".
+4. **Never make found-item details public.** A public listing naming a recovered
+   phone is a shopping list.
+5. **Never add a reward or payment field.** A Swiss transport operator is
+   legally barred from claiming a finder's reward (VPB Art. 77 Abs. 2, SR
+   745.11), and offering money for prosocial behaviour is a well-documented way
+   to reduce it (Frey & Oberholzer-Gee 1997).
+6. **Never hardcode an operator's name outside the tenant SSOT.** `pnpm run
+   check:tenant` fails the build if you do.
+7. **Never cache personal data in a service worker.** Offline queueing is fine;
+   persisting someone's contact details on a shared phone is not.
+8. **Never commit with `pnpm run verify` red.**
 
-Workspace‑scoped (examples)
-- `pnpm --filter @sbb-fundbuero/types run build`
-- `pnpm --filter @sbb-fundbuero/reporting-service run build`
+---
 
-Docker/K8s
-- `pnpm run docker:build` | `pnpm run docker:up` | `pnpm run docker:down`
-- `pnpm run k8s:deploy` (expects kubectl context configured)
+## Load-bearing decisions
 
-Agent Tools
-- `make agent-log SUMMARY="..." CHANGES="..." COMMANDS="..." NOTES="..." AGENT=<model-name>`
-- `scripts/claim.sh <area> "Short intent summary"` (AGENT_NAME/ETA env vars)
-- `scripts/smoke.sh [base_url]` (defaults to `http://localhost:3001`)
-- `make jwt JWT_SECRET=... PAYLOAD='{"id":"u1","email":"u1@example.com"}' EXPIRES=3600`
-- `make handoff AGENT=<model> NEXT="short next steps" BASE_URL=http://localhost:3001`
-- `make refresh-claim AGENT=<model> AREA="services/reporting" ETA=45m`
+### The tenant SSOT — the operator is configuration, not code
 
-**Cursor Integration:**
-- Launch Cursor on this workspace and select desired model from the available options
-- Models auto-detect project structure and can seamlessly take over tasks
-- Use "Apply" feature to implement changes suggested by any model
-- Models have access to full workspace context and can run terminal commands
+An operator's identity lives in exactly two places:
 
-JWT Testing
-- Generate a token with the same `JWT_SECRET` used by the service.
-- Example usage:
-  - `JWT_SECRET=your-secret ./scripts/generate-jwt.js`
-  - `make jwt JWT_SECRET=your-secret`
+| File | Owns |
+|---|---|
+| `frontend/lib/tenant.ts` | Wordmark, legal name, product name, locale, operator code, theme colour |
+| `frontend/app/globals.css` | Palette + font, one `:root[data-tenant="…"]` block per operator |
 
-## Environment
-Common vars
-- `PORT`: Service port
-- `CORS_ORIGIN`: Allowed origin(s), default `*`
-- `JWT_SECRET`: For auth middleware (dev default present)
-- Postgres (Reporting service expects discrete vars)
-  - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
-- Redis
-  - `REDIS_URL` (e.g., `redis://localhost:6379`)
+`<html data-tenant>` is set once in `app/layout.tsx`; every colour token keys off
+it, so the palette flips at runtime from one attribute. Adding an operator is
+two edits — a `TENANTS` entry and one CSS override block restating only the
+tokens that differ. **Never a component change.**
 
-Notes
-- `docker-compose.yml` sets a `DATABASE_URL` for containers, but the reporting service code uses discrete `DB_*` vars. For local runs outside Compose, export `DB_*` vars.
-- Logging writes to `logs/` in some services. Ensure the folder exists or prefer Console transport in dev.
+`scripts/check-tenant-ssot.sh` enforces this and runs inside `pnpm run verify`.
+It exists because the codebase previously spread one operator's name across 600+
+references, and nothing would have failed if that crept back — the app would
+just have quietly stopped being re-brandable.
 
-## Local Development Flows
-Option A: Full stack via Compose
-- `pnpm run docker:up`
-- Access: API Gateway `http://localhost:3000`, Reporting `http://localhost:3001` (docs at `/docs`)
+**Trademark safety.** A tenant with `isConcept: true` uses a third-party
+trademark, so it is a pitch artefact, not a product: those builds render an
+"unabhängiges Konzept" notice on every screen and emit `robots: noindex`. The
+neutral house brand is the default, including when `NEXT_PUBLIC_TENANT` is unset
+or misspelled — failing open to someone else's brand is the one failure mode
+that carries real cost.
 
-Option B: Run reporting service only
-- Start Postgres + Redis locally (or via Compose) 
-- Export env: `DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, REDIS_URL, PORT`
-- Build deps: `pnpm --filter @sbb-fundbuero/types run build`
-- Build service: `pnpm --filter @sbb-fundbuero/reporting-service run build`
-- Dev: `pnpm --filter @sbb-fundbuero/reporting-service run dev`
-- Health: `GET /health`, Docs: `GET /docs`
+### Matching is identifier-first, then spacetime, then description
 
-## Design System
+In that order, and the order is the point.
 
-**SSOT situation**: Token values live in `frontend/app/globals.css` as CSS custom properties (white-label: `:root` is the neutral house brand, each operator gets a `:root[data-tenant="…"]` override block). `frontend/tailwind.config.js` references those vars — no literal hex. A TypeScript mirror exists at `frontend/lib/design-system.ts` (`APP_*` constants) for non-CSS contexts only; it must stay in sync with `globals.css` manually.
+1. **Identifier** — serial, IMEI, engraving, registration, last 4 of an IBAN. An
+   exact identifier match plus a plausible trip is near-certain.
+2. **Spacetime** — trip, coach, seat, time window. A journey collapses the
+   search space in a way a city street cannot. This is the product's core
+   technical advantage; do not generalise it away.
+3. **Description and images** — supporting evidence only.
 
-### Color Tokens (use `brand` / `app-*` Tailwind classes in components)
+Description similarity is a weak signal and must never outrank the first two.
+"Black umbrella" sits close to every other black umbrella in embedding space and
+produces a confident-looking score over noise. This is geometry, not a data
+problem: random words average near-perfect cosine similarity (Ethayarajh 2019),
+high-frequency vocabulary collapses into a dense blob (Li et al. 2020), and in
+high dimensions some points become everyone's nearest neighbour (Radovanović et
+al. 2010). Fellegi & Sunter (1969) is the formal statement of why a rare value
+carries weight and a common one does not.
+
+Every match persists a **score breakdown** — deterministic arithmetic, each
+signal's contribution visible. Staff and passengers must be able to see why two
+records were linked. No opaque model output in the matching path.
+
+### Ownership requires a challenge
+
+Found-item details are private by default. A claim is an assertion with
+evidence, resolved by a **challenge**: the claimant describes something the
+listing does not show — a lock screen, a scratch, what is in the side pocket.
+Resolution carries a confidence level and a named resolver, and is logged.
+
+Anything less means anyone who sees a found item can claim it.
+
+### Retention is a column, not a paragraph
+
+Reports, images and contact details carry a deletion deadline as a database
+column, with a scheduled purge. Retention enforced by documentation is retention
+that does not happen.
+
+Legal basis: items found on transport premises must be handed to staff (ZGB Art.
+720 Abs. 3, SR 210); the operator counts as finder but may claim no finder's
+reward, must notify a known loser, and may auction after three months — one
+month if the item is worth ≤ CHF 50 (VPB Art. 77, SR 745.11).
+
+### The fallback that could not fail
+
+`useApiWithFallback` catches any API error **and any `success: false`** and
+substitutes `lib/mock-data.ts`, setting `error` to `null` on that path. The UI
+therefore has no way to render "backend down" — it renders a complete,
+persuasive product with no backend at all.
+
+`config.demo.enabled` is now honest about this: demo mode is on whenever no
+backend is configured, so running on fixtures is a declared state rather than a
+fallback reached by letting a request fail first. It previously read
+`process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || true`, which is `true` for
+every possible value of the variable.
+
+**When the real backend lands, this hook must surface failure, not hide it.**
+
+### No localhost fallback for API URLs
+
+`config.api.baseUrl` has deliberately no `|| 'http://localhost:3001'` default. A
+production build inlines these values into the browser bundle, so such a default
+does not mean "try the dev backend" — it means every visitor's browser aims the
+request at port 3001 **of their own machine**. Unset means exactly what it says:
+no backend is reachable from this build.
+
+---
+
+## Design system
+
+Token values live in `frontend/app/globals.css` as CSS custom properties.
+`frontend/tailwind.config.js` references those vars — **no literal hex**.
+`frontend/lib/design-system.ts` mirrors them for non-CSS contexts (OG images,
+canvas) and must be kept in sync by hand.
 
 ```
-brand / brand-hover / brand-active     — tenant brand colour (sbb tenant → SBB red)
-app-charcoal                           — primary text (#212121)
-app-granite                            — secondary text (#686868)
-app-smoke                              — fill-only (#8D8D8D — never text)
-app-cloud                              — borders (#E5E5E5)
-app-milk                               — page background (#F6F6F6)
-app-white                              — card/surface background (#FFFFFF)
-app-success / app-warning / app-error  — functional states
-app-blue / app-info                    — info state (#2D327D)
+brand / brand-hover / brand-active     tenant brand colour
+app-charcoal                           primary text
+app-granite                            secondary text
+app-smoke                              fill only — never text
+app-cloud                              borders
+app-milk                               page background
+app-white                              card/surface background
+app-success / app-warning / app-error  functional states
+app-blue / app-info                    info state
 ```
 
-### Spacing / Radius / Shadow classes
-
 ```
-Spacing:       p-app-xs (4px) / p-app-sm (8px) / p-app-md (16px) / p-app-lg (24px) / p-app-xl (32px) / p-app-2xl (48px)
-Border radius: rounded-app-sm (4px) / rounded-app-md (8px) / rounded-app-lg (16px) / rounded-app-xl (24px)
-Shadows:       shadow-app-card / shadow-app-modal / shadow-app-button
+Spacing   p-app-xs 4 / sm 8 / md 16 / lg 24 / xl 32 / 2xl 48
+Radius    rounded-app-sm 4 / md 8 / lg 16 / xl 24
+Shadow    shadow-app-card / shadow-app-modal / shadow-app-button
 ```
 
-### Utility classes defined in `frontend/app/globals.css`
+Pre-built classes in `globals.css` — use them, do not rebuild inline:
+`.btn-app-primary` `.btn-app-secondary` `.btn-app-ghost` `.card-app` `.input-app`
+`.header-app` `.mobile-container` `.safe-top` `.safe-bottom` `.bottom-nav`
+`.modal-overlay` `.modal-content` `.toast` `.touch-feedback` `.hide-scrollbar`
 
-Pre-built component classes (use these, do not rebuild inline):
-- `.btn-app-primary` / `.btn-app-secondary` / `.btn-app-ghost`
-- `.card-app` / `.input-app` / `.header-app`
-- `.mobile-container` / `.safe-top` / `.safe-bottom` / `.bottom-nav`
-- `.modal-overlay` / `.modal-content` / `.toast`
-- `.touch-feedback` / `.hide-scrollbar`
-- `.animate-slide-up` / `.animate-slide-down` / `.animate-fade-in` / `.animate-pulse-ring` / `.animate-pulse-subtle`
+**Audit:** `grep -r '\[#' frontend/` — every hit is a violation.
 
-### SSOT Rule
+---
 
-All design tokens live in `app/globals.css` only. Tailwind config MUST reference CSS vars (`'var(--name)'`), never literal values. Components MUST use semantic Tailwind classes, never arbitrary values like `bg-[#hex]`.
+## Commands
 
-**Violations to fix when touching UI:**
-- `bg-[#hex]` / `text-[#hex]` in className → CSS var + semantic class
-- `style={{ color: '#hex' }}` → CSS var + className
-- Literal hex in tailwind.config → `'var(--color-name)'`
-- Same token defined in 2+ files → consolidate to globals.css
+```bash
+pnpm install
+pnpm run verify        # format + build types + lint + typecheck + test + tenant SSOT
+pnpm run dev
+pnpm run docker:up     # Postgres + Redis + services
+```
 
-**Audit:** `grep -r '\[#' frontend/` — every result is a violation.
+`verify` is the single definition of "green". CI calls it verbatim, so green
+locally means green in CI. Do not add a check to CI that is not in `verify` — a
+check you cannot run before pushing is a check that fails after pushing.
 
-## Coding Standards
-- TypeScript strict; Node ESM/CJS as per tsconfig per service
-- Linting with ESLint where configured; formatting via Prettier if present
-- Prefer small, focused changes; update docs and types in `shared/` when APIs evolve
-- Keep services isolated; shared contracts belong in `shared/types`
+---
 
-## Testing
-- Framework: Jest for services (where configured)
-- Conventions
-  - Unit tests near source or in `__tests__` (service preference)
-  - Name: `*.test.ts` or `*.spec.ts`
-- Commands
-  - `pnpm --filter @sbb-fundbuero/reporting-service run test`
-- Add regression tests for fixed bugs; keep tests fast and isolated
+## Accessibility
 
-## Database
-- Local dev DB initialized by Compose via `database/init`
-- Reporting service scripts
-  - `pnpm --filter @sbb-fundbuero/reporting-service run db:migrate`
-  - `pnpm --filter @sbb-fundbuero/reporting-service run db:seed`
-- Use proper indexing for new queries (follow existing schema patterns)
+Target **WCAG 2.2 AA**, and test it rather than assuming it. This is public
+transport: keyboard navigable, screen-reader labelled, sufficient contrast, no
+colour-only signalling, respects reduced motion.
 
-## Common Tasks
-- Add route (Reporting)
-  - Define validation in `src/middleware/validation.ts`
-  - Implement controller in `src/controllers`
-  - Wire route in `src/routes`
-  - Update OpenAPI annotations and verify `/docs`
-- Add event
-  - Publish via `redisPublisher.publish(channel, payload)`
-  - Subscribe in service startup and broadcast via Socket.IO as needed
-- Extend data contracts
-  - Update `shared/types/src/index.ts`
-  - Rebuild `@sbb-fundbuero/types`, then services
+`frontend/lib/__tests__/contrast.test.ts` asserts contrast ratios on the token
+pairs actually used together. It caught white-on-amber at 2.15:1 on the one
+badge a passenger sees while still hoping.
 
-## Troubleshooting
-- TypeScript build breaks in reporting
-  - Ensure `@sbb-fundbuero/types` is built first
-  - Redis subscribe signature: use array of channels and typed callback
-- DB/Redis connection issues
-  - Verify `DB_*` and `REDIS_URL`; check Compose health
-- Logs directory
-  - Create `logs/` or set `NODE_ENV!=production` to prefer Console transport
-- Port conflicts
-  - Adjust `PORT` per service or stop conflicting processes
+---
 
-## Security & Ops
-- JWT required on protected endpoints; rotate secrets for non‑dev
-- Rate limiting via Redis middleware per route
-- Follow OWASP/ASVS for changes; avoid logging PII
+## Four languages
 
-## Contributing With AI Agents
-- Prefer targeted builds (`--workspace`) and minimal diffs
-- Use "Apply" feature in Cursor to implement changes suggested by any model
-- Run typecheck and (where configured) lint before finishing
-- Update this file when behavior or commands change
-- Leverage each model's strengths:
-  - **Code-Supernova-1-Million**: Complex multi-step tasks, architecture decisions
-  - **Grok Code**: Quick implementations, current best practices, real-time updates
-  - **Claude Code**: TypeScript expertise, clean code patterns, documentation
+de, fr, it, en. Switzerland is quadrilingual and the schema already anticipates
+it. `frontend/lib/labels.ts` is the SSOT for UI text but currently holds one
+locale — it is a single-language SSOT, not i18n. No hardcoded strings in
+components either way.
