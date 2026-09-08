@@ -47,3 +47,6 @@ temp/
 
 # Scratch written by browser-driving agents (Playwright MCP).
 .playwright-mcp/
+
+# TypeScript incremental build info
+*.tsbuildinfo

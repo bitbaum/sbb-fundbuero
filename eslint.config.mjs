@@ -1,43 +1,45 @@
-// Flat config (ESLint 10) for the backend workspaces (services/*, shared/*).
-// Mirrors the fleet's node-library pattern (ai-kit, ai-forms): recommended
-// presets only — the floor is "lint runs and can fail", not "lint encodes
-// taste". Rules carried over verbatim from the previous .eslintrc.json.
+// eslint-config-next 16 ships a FLAT config natively (it peers eslint >=9 and
+// exports `./core-web-vitals` as an array of config objects). It must be spread
+// directly.
 //
-// The frontend is NOT covered here: it has its own eslint.config.mjs
-// (eslint-config-next flat config), and flat-config lookup finds the nearest
-// config file, so files under frontend/ never reach this one.
-import js from '@eslint/js';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+// It was previously wrapped in FlatCompat, which is the bridge for LEGACY
+// eslintrc-style configs. Wrapping an already-flat config made the compat
+// layer try to validate it as eslintrc and die on "Converting circular
+// structure to JSON" — so `eslint .` could not run at all. That was invisible
+// because the lint script called `next lint`, and Next 14's `next lint` finds
+// no `.eslintrc*`, so it launched its interactive "How would you like to
+// configure ESLint?" wizard instead of ever reaching the config. Two failures
+// stacked: the runner never got to the config, and the config was broken.
+import coreWebVitals from 'eslint-config-next/core-web-vitals';
 
-export default tseslint.config(
+// Named rather than an anonymous array literal — `import/no-anonymous-default-export`
+// is part of the config this file loads, so exporting the array inline made the
+// config warn about itself.
+const config = [
+  ...coreWebVitals,
   {
-    // dist/ is tsc output; frontend/, mobile-demo/ and demo/ have their own
-    // toolchains (or are static demos) — same exclusions as the old
-    // .eslintrc.json ignorePatterns.
-    ignores: ['**/dist/**', '**/node_modules/**', 'frontend/**', 'mobile-demo/**', 'demo/**'],
-  },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ['**/*.ts'],
-    languageOptions: { globals: globals.node },
-    rules: {
-      // Carried over from .eslintrc.json: `any` stays visible without failing
-      // the gate on existing scaffold code.
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        // caughtErrors:'none' preserves the pre-upgrade contract —
-        // @typescript-eslint v8 flipped the default from 'none' to 'all',
-        // which would newly flag every unused `catch (err)` binding.
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrors: 'none' },
-      ],
-    },
+    // eslint-plugin-react's version:'detect' calls context.getFilename, which
+    // ESLint 10 removed — pin the React major so detection never runs. Must
+    // come after coreWebVitals, which sets version:'detect'.
+    settings: { react: { version: '18' } },
   },
   {
-    // Plain Node scripts at the repo root and in scripts/.
-    files: ['**/*.{js,mjs,cjs}'],
-    languageOptions: { globals: { ...globals.node, ...globals.nodeBuiltin } },
+    // Build output and dependencies are not ours to lint. Without this, a
+    // `.next/` left over from a local build makes lint fail on generated code.
+    // Toolchain config files (*.config.js/mjs) are ignored too: eslint-config-next
+    // parses plain JS with @babel/eslint-parser, whose eslint-scope-5 scope
+    // manager lacks the `addGlobals` API ESLint 10 requires — linting any .js
+    // file crashes ESLint outright. Same exclusion the fleet's other
+    // eslint-10 + next repos (botsmann) ship.
+    ignores: [
+      '.next/**',
+      'out/**',
+      'node_modules/**',
+      'next-env.d.ts',
+      '*.config.js',
+      '*.config.mjs',
+    ],
   },
-);
+];
+
+export default config;

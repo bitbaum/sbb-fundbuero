@@ -26,7 +26,7 @@ Nothing here is optional before this is described to anyone as working.
 - [ ] **Photo upload is declared but impossible.** `images` validates as
       `Joi.array().items(Joi.string().uri())` — URLs the client must already
       host. There is no upload route, no storage, no presign, nothing.
-- [ ] **The frontend cannot report that the backend is down.**
+- [ ] **The UI cannot report that the backend is down.**
       `useApiWithFallback` sets `error: null` on the fallback path, so a total
       backend outage renders as a complete, working product on fixtures.
       Fixtures must be visibly fixtures.

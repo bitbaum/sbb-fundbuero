@@ -1,7 +1,0 @@
-# Marks the frontend as its own pnpm root (it is not a member of the
-# services/shared workspace above — it keeps its own lockfile, as under npm).
-packages:
-  - '.'
-# pnpm 11 blocks dependency build scripts by default; allow only what we trust.
-allowBuilds:
-  unrs-resolver: true

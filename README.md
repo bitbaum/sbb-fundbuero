@@ -105,11 +105,11 @@ Read this before believing anything the running demo appears to do.
 
 | | Status |
 |---|---|
-| Passenger reporting UI | **Implemented** (frontend) |
-| Staff notification UI | **Implemented** (frontend) |
+| Passenger reporting UI | **Implemented** |
+| Staff notification UI | **Implemented** |
 | Passenger → staff handoff in the live demo | **Fixture.** `lib/demo-bus.ts` passes reports between the two views through the browser's own storage. No server is involved. |
 | All data on the deployed site | **Fixture.** `lib/mock-data.ts`. The deployed build has no backend configured, so demo mode is on and declared. |
-| Reporting backend (Express + Postgres) | **Implemented but not deployed.** Real parameterised queries, real full-text search. Only the frontend is shipped. |
+| Backend | **Being rebuilt.** The four Express services are deleted; route handlers in the one Next app replace them. |
 | Recording a **found** item | **Does not exist.** `found_items` is in the schema and queried by the matcher, but nothing anywhere inserts into it. |
 | Matching | **Does not exist** in any useful sense — it queries a permanently empty table. Being rebuilt identifier-first. |
 | Claiming an item | **Does not exist.** No challenge, no ownership check. |
@@ -198,7 +198,7 @@ month if it is worth ≤ CHF 50. Items found on transport premises must be hande
 to staff (ZGB Art. 720 Abs. 3, [SR 210](https://www.fedlex.admin.ch/eli/cc/24/233_245_233/de)).
 
 **The operator is configuration, not code.** Identity lives in
-`frontend/lib/tenant.ts` and one CSS block; `pnpm run check:tenant` fails the
+`lib/tenant.ts` and one CSS block; `pnpm run check:tenant` fails the
 build if an operator name appears anywhere else. `AGENTS.md` has the detail.
 
 ---
@@ -223,8 +223,12 @@ decision.
 
 ```bash
 pnpm install
-cd frontend && pnpm run dev      # http://localhost:3005 — fixtures, no backend
+pnpm run dev                     # http://localhost:3005 — fixtures, no backend
 ```
+
+One app, one `package.json`, one lockfile. There is no `frontend/` directory
+and no workspace: this is a modular monolith, and the module boundaries are
+directories, not deployment units.
 
 | Path | |
 |---|---|
