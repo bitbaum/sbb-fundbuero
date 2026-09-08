@@ -1,5 +1,22 @@
 # SBB Fundbüro: Eine Analyse aus ersten Prinzipien und Verbesserungsvorschlag
 
+> **Faktencheck 2026-09-08.** Dieses Dokument stammt aus Januar 2026. Die
+> Kernanalyse hat sich bei der Überprüfung als richtig erwiesen — die Zahlen in
+> Teil 1 stimmen mit den Angaben von SBBs Fundservice-Dienstleister überein.
+> Vier Stellen waren jedoch falsch oder unbelegt und sind unten korrigiert bzw.
+> markiert:
+>
+> 1. **Echtzeit-Zugposition ist NICHT verfügbar** (Teil 2.1). GTFS-RT liefert
+>    Verspätungen und Ausfälle, keine Fahrzeugpositionen — das ist auf der
+>    Plattform ausdrücklich so festgehalten.
+> 2. **Formationsdaten gibt es nur für heute bis heute+3 Tage**, ohne Archiv
+>    (Teil 2.1). Eine Verlustmeldung kommt immer *nachher*.
+> 3. **Die Express-Suche kostet seit 1.1.2026 CHF 75**, nicht CHF 50.
+> 4. **Teil 3 (internationale Beispiele) ist unbelegt** und wurde nicht
+>    verifiziert.
+>
+> Alles ohne Quellenangabe ist als Annahme zu lesen, nicht als Tatsache.
+
 ## Zusammenfassung
 
 Das Schweizer ÖV-Fundsystem hat einen **grundlegenden Designfehler**: Es behandelt die Rückgabe verlorener Gegenstände als *reaktiven Verwaltungsprozess* statt als *zeitkritische operative Aufgabe*. Dieser Bericht analysiert den Status quo, identifiziert Ursachen und schlägt drei Lösungen vor – von inkrementell bis transformativ.
@@ -12,7 +29,18 @@ Das Schweizer ÖV-Fundsystem hat einen **grundlegenden Designfehler**: Es behand
 
 ### 1.1 Das SBB-Fundsystem
 
-**Umfang**: Die SBB bearbeitet jährlich ca. **120'000 Fundgegenstände** und **180'000 Verlustmeldungen** mit einer Rückgabequote von ~55%.
+**Umfang**: Die SBB bearbeitet jährlich ca. **120'000 Fundgegenstände** und
+**180'000 Verlustmeldungen** bei einer Rückgabequote von ~55%
+([RUBICON](https://www.rubicon.eu/en/portfolio-item/lost-property-service-of-the-swiss-federal-railways-sbb/),
+Betreiber von SBBs Fundservice seit 2004). Neuere, SBB zugeschriebene Zahlen:
+**~130'000 abgegebene Gegenstände und ~60% Rückgabequote für 2024**
+([watson](https://www.watson.ch/schweiz/oev/327531280-fundgegenstaende-im-zug-sbb-erhoeht-preise-fuer-verlorene-dinge)),
+gegenüber 52,3% im Jahr 2016
+([swissinfo](https://www.swissinfo.ch/ger/fundus-der-sbb-fundsachen-gleicht-einer-wundertuete/43375672)).
+
+**Die eigentliche Lücke** ist die Differenz: rund 180'000 Meldungen jagen rund
+120'000 abgegebene Gegenstände. Der Engpass ist nicht der Abgleich — der
+funktioniert — sondern dass Gegenstände gar nie beim Betreiber ankommen.
 
 **Aktueller Prozessablauf**:
 ```
@@ -56,7 +84,13 @@ Bei regionalen Verkehrsmitteln (Trams, Busse) ist die Situation noch schlechter:
 - Gegenstand kann von anderem Fahrgast mitgenommen werden: **jederzeit**
 - Fahrer/Kontrolleur hat Kapazität zum Nachschauen: **nur während Wende**
 
-**Aktuell schnellste Option**: Express-Suchanfrage für **CHF 50**, Antwort innerhalb **4 Stunden**.
+**Aktuell schnellste Option**: Express-Suchauftrag für **CHF 75** pauschal
+(inkl. Rücksendung), Rückmeldung innerhalb **4 Stunden**. Bedingungen: der Zug
+muss Zugpersonal haben und noch ≥30 Minuten unterwegs sein, oder es muss ein
+bedienter Schalter vorhanden sein
+([SBB](https://www.sbb.ch/de/hilfe-und-kontakt/fundbuero/express-suchauftrag-aufgeben.html)).
+Der Preis wurde per 1.1.2026 von CHF 50 auf CHF 75 erhöht; die Meldung selbst
+ist weiterhin gratis, die Gebühr fällt bei erfolgreicher Rückgabe an.
 
 Das ist absurd unpassend zur tatsächlichen Zeitdynamik.
 
@@ -68,16 +102,29 @@ Das ist absurd unpassend zur tatsächlichen Zeitdynamik.
 
 Die technische Fähigkeit existiert. Das Open-Data- und App-Ökosystem der SBB umfasst:
 
-| Datenpunkt | Verfügbarkeit |
+| Datenpunkt | Verfügbarkeit für uns (geprüft 2026-09-08) |
 |------------|---------------|
-| Echtzeit-Zugposition | ✓ GTFS-RT API |
-| Zugformation (welche Wagen) | ✓ Formationsdaten-API |
-| Deine Reisehistorie (EasyRide) | ✓ GPS-Tracking während Fahrt |
-| SwissPass-Identität | ✓ In App verknüpft |
-| Mitarbeiter-Mobile-System | ✓ 7'000 Geräte im Einsatz |
-| Zug-/Tramnummer zu Zeitpunkt X | ✓ Aus jeder Reise ableitbar |
+| Zug-/Tramnummer zu Zeitpunkt X | ✅ **Ja.** GTFS `trips.txt`: `trip_short_name` = Zugnummer, `original_trip_id` = SJYID. Ohne API-Key. |
+| Was tatsächlich gefahren ist | ✅ **Ja.** Ist-Daten, Archiv zurück bis 2016, ohne API-Key. `FAHRT_BEZEICHNER` = SJYID. |
+| Haltestellen-/Sektorenregister | ✅ **Ja.** 59'530 Dienststellen; `sektortafel` auf data.sbb.ch mit Koordinaten. |
+| Verspätungen / Ausfälle | ✅ **Ja**, mit kostenlosem API-Key (GTFS-RT, 5 Anfragen/Min). |
+| Zugformation (welche Wagen, Sektoren) | ⚠️ **Nur heute bis heute+3 Tage. Kein Archiv.** Vier Archiv-Endpunkte geprüft, alle 404. Eine Verlustmeldung kommt immer nachher → **wir müssen den Feed ab Tag eins selbst täglich archivieren.** |
+| **Echtzeit-Zugposition** | ❌ **Nein.** Wird auf der Plattform ausdrücklich *nicht* veröffentlicht. Die ursprüngliche Behauptung „✓ GTFS-RT API" war falsch. |
+| Reisehistorie (EasyRide) | ❌ **Nicht für Dritte.** SBB-intern; keine öffentliche Schnittstelle gefunden. |
+| SwissPass-Identität | ❌ **Nicht für Dritte.** OAuth existiert, ist aber an SBB-Partnerverträge gebunden. |
+| Mitarbeiter-Mobile-System (~7'000 Geräte) | ❌ **Kein öffentliches API.** Weder bei RUBICON/Nova Find noch bei easyfind eine Spezifikation gefunden (nicht gefunden ≠ existiert nicht). |
 
-**Kernaussage**: Mit EasyRide verfolgt die SBB deinen genauen Standort via GPS und Bewegungssensoren während der gesamten Fahrt. Sie wissen buchstäblich, in welchem Fahrzeug du warst.
+**Quelle für alle ✅-Zeilen**: [opentransportdata.swiss](https://opentransportdata.swiss/),
+Lizenz „freie Nutzung, Quellenangabe erforderlich"; API-Keys gratis und
+selbstbedient.
+
+**Kernaussage, korrigiert**: Die SBB weiss über EasyRide vermutlich sehr genau,
+in welchem Fahrzeug jemand war — aber **wir kommen an diese Daten nicht heran**,
+und ein Konzept, das darauf baut, baut auf nichts. Was wir tatsächlich haben,
+reicht jedoch: aus Ort und Zeit lassen sich über GTFS die plausiblen Fahrten
+vorschlagen, die der Fahrgast dann bestätigt. Das braucht keinen Zugriff auf
+seine Reisehistorie — und ist datenschutzrechtlich ohnehin die bessere
+Konstruktion.
 
 ### 2.2 Was Regionalbetreiber wissen
 
@@ -90,6 +137,11 @@ Die technische Fähigkeit existiert. Das Open-Data- und App-Ökosystem der SBB u
 ---
 
 ## Teil 3: Internationale Best Practices
+
+> ⚠️ **Unbelegt.** Die Angaben in diesem Teil stammen aus der ursprünglichen
+> Recherche ohne Quellenangabe und wurden **nicht verifiziert** — insbesondere
+> die Gebühr von CHF 4.50 (iLost) und der Sprung der Rückgabequote von <10% auf
+> 30% (Keio Corp). Als Hypothesen lesen, nicht zitieren.
 
 ### 3.1 Niederlande: iLost-Plattform
 
@@ -131,7 +183,7 @@ Die Transit-App (in 1000+ Städten) enthält neu:
 
 1. **Falsches mentales Modell**: System behandelt dies als "Versicherungsfall" (alles dokumentieren, verifizieren, bearbeiten) statt als "Notfallreaktion" (schnell handeln, später verifizieren)
 
-2. **Fehlanreize**: SBB verlangt für Express-Suche CHF 50, Standardsuche ist gratis. Das macht die tatsächliche Lösung (schnelles Handeln) teuer und subventioniert die ineffektive (langsamer Abgleich).
+2. **Fehlanreize**: SBB verlangt für Express-Suche CHF 75, Standardsuche ist gratis. Das macht die tatsächliche Lösung (schnelles Handeln) teuer und subventioniert die ineffektive (langsamer Abgleich).
 
 3. **Organisatorische Silos**: Fundbüro ist eine "Supportfunktion", keine "Betriebsfunktion". Fahrer/Kontrolleure werden nicht an Fundrückgaben gemessen.
 
@@ -184,7 +236,7 @@ Nutzer-Reisehistorie → Fahrzeug identifizieren → Mitarbeiter-App-Benachricht
 **Erwartete Wirkung**:
 - 10x schnellere Meldungen (2 Taps statt mehrstufiges Formular)
 - Höhere Rückgabequote (Gegenstände vor Depot abgefangen)
-- Weniger CHF 50 Express-Suchen (bessere Gratis-Option)
+- Weniger CHF 75 Express-Suchen (bessere Gratis-Option)
 
 ### Option 2: Drittanbieter-Companion-App / Browser-Erweiterung
 
