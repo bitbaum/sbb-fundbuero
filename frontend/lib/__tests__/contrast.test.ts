@@ -13,7 +13,12 @@
  * Add a new token, use it as text, and the ratio decides — nothing here needs
  * updating for that to work.
  *
- * Two properties:
+ * It has since grown a second job, because contrast turned out to be the
+ * smaller half of the problem: a ratio only describes what actually renders,
+ * and this app kept shipping classes that rendered nothing at all. The last
+ * two describes below are about that — see their own comments.
+ *
+ * The contrast properties:
  *
  *  1. Any `--app-*` colour used as TEXT must clear WCAG AA (4.5:1) against
  *     both surfaces text actually sits on: white cards and the milk page.
@@ -191,6 +196,43 @@ describe('Tailwind sees every directory that names UI classes', () => {
 
   it.each(SCANNED_DIRS)('%s is in the content globs', (dir) => {
     expect(contentBlock).toContain(`'./${dir}/`);
+  });
+});
+
+/**
+ * The same failure in its other form: the class is seen, and still no rule is
+ * emitted. An opacity modifier (`bg-brand/10`) needs a colour Tailwind can put
+ * an alpha channel into, and every colour in this config is a bare
+ * `var(--token)`. Tailwind cannot compose those, so it emits NOTHING — no
+ * warning, no fallback, just a transparent background.
+ *
+ * This shipped: the Fundservice entry point in the profile (`bg-brand/10`,
+ * plus a `hover:bg-brand/15` that also did nothing) and the priority chip on
+ * TripCard rendered with no highlight at all. Measured on the deployed site:
+ * `backgroundColor: rgba(0, 0, 0, 0)`.
+ *
+ * The fix is a real token — --brand-surface and friends, derived from --brand
+ * with color-mix — so the tint follows the tenant. This test exists to stop
+ * the modifier syntax coming back, since it fails silently and looks correct
+ * in review.
+ */
+describe('no colour utility uses an opacity modifier', () => {
+  const OFFENDER =
+    /(?:bg|text|border|ring|from|via|to|outline|divide)-(?:brand|app)[a-z-]*\/\d{1,3}/g;
+
+  it('finds none in app/, components/ or lib/', () => {
+    const hits = sourceFiles().flatMap((file) =>
+      fs
+        .readFileSync(file, 'utf8')
+        .split('\n')
+        .flatMap((text, i) =>
+          (text.match(OFFENDER) ?? []).map(
+            (cls) => `${path.relative(FRONTEND, file)}:${i + 1}  ${cls}`,
+          ),
+        ),
+    );
+
+    expect(hits).toEqual([]);
   });
 });
 

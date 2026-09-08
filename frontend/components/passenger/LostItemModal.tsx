@@ -148,8 +148,8 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
                       onClick={() => handleSelectCategory(cat)}
                       className={`
                         bg-app-milk border-2 border-app-cloud rounded-app-md p-4 text-center
-                        hover:border-brand hover:bg-red-50 transition-all touch-feedback
-                        ${category === cat ? 'border-brand bg-red-50' : ''}
+                        hover:border-brand hover:bg-brand-surface transition-all touch-feedback
+                        ${category === cat ? 'border-brand bg-brand-surface' : ''}
                       `}
                     >
                       <div className="text-3xl mb-2">{cfg.icon}</div>
@@ -204,7 +204,7 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
                             w-full text-left p-4 rounded-app-md border-2 transition-all
                             ${
                               location === loc
-                                ? 'border-brand bg-red-50'
+                                ? 'border-brand bg-brand-surface'
                                 : 'border-app-cloud bg-app-milk hover:border-app-silver'
                             }
                           `}
@@ -256,7 +256,7 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
 
               <div className="bg-app-milk rounded-app-lg p-4 text-left mb-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-app-success/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-app-success-surface flex items-center justify-center">
                     <span className="text-app-success text-xl">📍</span>
                   </div>
                   <div>
