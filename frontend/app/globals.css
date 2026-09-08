@@ -39,9 +39,13 @@
   --app-cement: #bdbdbd;
   --app-graphite: #b7b7b7;
   --app-storm: #a8a8a8;
-  /* #8D8D8D is 3.32:1 on white — fine as a FILL (the 3:1 non-text floor),
-     never as text. Every text use moved to --app-granite (5.72:1); the one
-     survivor is the offline status dot, which is a fill. */
+  /* #8D8D8D is 3.32:1 on white (3.07:1 on --app-milk) — fine as a FILL (the
+     3:1 non-text floor), never as text. Text greys start at --app-granite
+     (5.57:1 on white, 5.16:1 on milk). Note --app-metal reaches 4.54:1 on
+     white but only 4.20:1 on milk, so it is NOT a safe text grey either.
+     This rule is enforced by lib/__tests__/contrast.test.ts, because stating
+     it in a comment already failed twice: the placeholder in .input-app and
+     the timestamp line in MyReports both came back as smoke-on-light. */
   --app-smoke: #8d8d8d;
   --app-metal: #767676;
   --app-granite: #686868;
@@ -53,7 +57,11 @@
 
   /* Functional */
   --app-blue: #2d327d;
-  --app-success: #00973b;
+  /* Darkened from #00973B (3.83:1) so it clears AA in BOTH roles it plays:
+     as white-on-green (the success toast, the "Gefunden" badge) and as green
+     text on a light surface. #007A30 is 5.49:1 either way. Fills are
+     unaffected in kind — the status dots only ever needed the 3:1 floor. */
+  --app-success: #007a30;
   --app-warning: #ffab00;
   --app-error: #eb0000;
   --app-info: #2d327d;
@@ -176,7 +184,7 @@ body {
     @apply w-full py-4 px-4 rounded-app-md;
     @apply bg-app-milk border-2 border-app-cloud;
     @apply text-app-base text-app-charcoal;
-    @apply placeholder:text-app-smoke;
+    @apply placeholder:text-app-granite;
     @apply focus:outline-none focus:border-brand focus:bg-white;
     @apply transition-colors duration-200;
   }

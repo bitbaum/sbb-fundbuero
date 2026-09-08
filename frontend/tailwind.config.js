@@ -1,9 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  // lib/ is NOT optional here. This codebase deliberately keeps UI class names
+  // in config (lib/labels.ts owns NOTIFICATION_STATUS_CONFIG), and Tailwind
+  // only emits a class it can SEE in the content globs. While lib/ was missing,
+  // `bg-app-granite` and `bg-amber-500` were never generated, so the
+  // "Nicht gefunden" and "In Bearbeitung" badges shipped as white text on no
+  // background — invisible — while the source looked perfectly correct.
+  // Enforced by lib/__tests__/contrast.test.ts.
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
