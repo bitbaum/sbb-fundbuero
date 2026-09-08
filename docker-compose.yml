@@ -6,6 +6,11 @@
 #
 # Ports are deliberately off the defaults so this cannot collide with a
 # Postgres already running on the host.
+#
+# Nothing is mounted into /docker-entrypoint-initdb.d. That hook runs ONCE, on
+# an empty volume, and never again — a bootstrap, not a migration system. The
+# schema now lives in db/migrations and is applied by `pnpm run db:setup`,
+# which can also migrate a database that already has data in it.
 
 services:
   postgres:
@@ -18,10 +23,6 @@ services:
       - '5433:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Applied by the image's entrypoint only on an EMPTY volume, so this can
-      # never migrate a database that already has data. Replaced by Drizzle
-      # migrations later in this branch — see TODO.md.
-      - ./database/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres -d sbb_fundbuero']
       interval: 5s

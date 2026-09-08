@@ -1,14 +1,14 @@
 /**
- * ts-jest rather than next/jest: these are pure-logic tests over the tenant
- * SSOT and the stylesheet that must agree with it. No JSX, no DOM, so the
- * lighter node environment is honest about what is being exercised.
- *
- * The repo's services already use jest 29 + ts-jest, so this keeps ONE test
- * framework across the monorepo instead of introducing a second.
+ * ts-jest rather than next/jest: these are pure-logic tests — the domain rules,
+ * the tenant SSOT, the stylesheet that must agree with it, and the static
+ * checks over db/. No JSX and no DOM, so the lighter node environment is
+ * honest about what is being exercised.
  */
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/lib/**/__tests__/**/*.test.ts'],
+  // lib/ holds the pure domain; db/ holds the schema and the checks that
+  // keep db/rls.sql in step with it. Both are node-environment logic tests.
+  testMatch: ['<rootDir>/lib/**/__tests__/**/*.test.ts', '<rootDir>/db/**/__tests__/**/*.test.ts'],
   // The app resolves `@/...` through tsconfig paths; jest needs the same map or
   // any module that reaches one (lib/mock-data -> @/lib/tenant) fails to load.
   moduleNameMapper: { '^@/(.*)$': '<rootDir>/$1' },
