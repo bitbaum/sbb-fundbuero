@@ -21,7 +21,7 @@ const config = [
     // eslint-plugin-react's version:'detect' calls context.getFilename, which
     // ESLint 10 removed — pin the React major so detection never runs. Must
     // come after coreWebVitals, which sets version:'detect'.
-    settings: { react: { version: '18' } },
+    settings: { react: { version: '19' } },
   },
   {
     // Build output and dependencies are not ours to lint. Without this, a
