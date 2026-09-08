@@ -26,13 +26,14 @@ Nothing here is optional before this is described to anyone as working.
 - [ ] **Photo upload is declared but impossible.** `images` validates as
       `Joi.array().items(Joi.string().uri())` — URLs the client must already
       host. There is no upload route, no storage, no presign, nothing.
-- [ ] **The frontend cannot report that the backend is down.**
+- [ ] **The UI cannot report that the backend is down.**
       `useApiWithFallback` sets `error: null` on the fallback path, so a total
       backend outage renders as a complete, working product on fixtures.
       Fixtures must be visibly fixtures.
-- [ ] **No migrations.** The schema is raw SQL applied by the Postgres
-      container's init hook, which runs once on an empty volume and never again.
-      There is no way to evolve the schema on a database that already has data.
+- [x] ~~**No migrations.**~~ Done: Drizzle migrations in `db/migrations`,
+      applied by `pnpm run db:setup` along with `db/rls.sql`. The container's
+      init hook is no longer used — it runs once on an empty volume and never
+      again, which is a bootstrap rather than a migration system.
 - [ ] **Retention is not enforced anywhere.** No deletion deadline column, no
       purge job. See *Regulatory*.
 - [ ] **One language.** `lib/labels.ts` is a single-locale SSOT, not i18n. de,
@@ -49,9 +50,13 @@ Nothing here is optional before this is described to anyone as working.
       auth.ts:44` reads `process.env.JWT_SECRET || 'your-secret-key'`. A
       deployment that forgets to set the variable accepts tokens anyone can
       forge. Fail closed: throw on startup instead.
-- [ ] **No row-level security.** Deny by default — `ENABLE ROW LEVEL SECURITY`
-      on every table and `REVOKE ALL` from `anon` and `authenticated`, then
-      grant back deliberately.
+- [x] ~~**No row-level security.**~~ Done in `db/rls.sql`, and proved against a
+      real Postgres rather than asserted. Note the deviation from the brief:
+      `anon` and `authenticated` are Supabase roles and this runs on plain
+      Postgres with no PostgREST, so creating them would have proved nothing.
+      The intent is implemented instead — `REVOKE ALL` from `PUBLIC`, ENABLE
+      plus FORCE RLS on all 14 tables, an app role that owns nothing, and
+      grants enumerated per table.
 - [ ] **No server-side authorisation on mutations.** Every mutation must check
       the actor server-side, not rely on the client not offering the button.
 - [ ] **Found-item detail exposure.** Once found items exist, their details must

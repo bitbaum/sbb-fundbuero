@@ -105,17 +105,18 @@ Read this before believing anything the running demo appears to do.
 
 | | Status |
 |---|---|
-| Passenger reporting UI | **Implemented** (frontend) |
-| Staff notification UI | **Implemented** (frontend) |
+| Passenger reporting UI | **Implemented** |
+| Staff notification UI | **Implemented** |
 | Passenger → staff handoff in the live demo | **Fixture.** `lib/demo-bus.ts` passes reports between the two views through the browser's own storage. No server is involved. |
 | All data on the deployed site | **Fixture.** `lib/mock-data.ts`. The deployed build has no backend configured, so demo mode is on and declared. |
-| Reporting backend (Express + Postgres) | **Implemented but not deployed.** Real parameterised queries, real full-text search. Only the frontend is shipped. |
+| Backend | **Half done.** The four Express services are deleted and the database layer is real; the route handlers that connect the UI to it are not written yet, so the UI still runs on fixtures. |
 | Recording a **found** item | **Does not exist.** `found_items` is in the schema and queried by the matcher, but nothing anywhere inserts into it. |
 | Matching | **Does not exist** in any useful sense — it queries a permanently empty table. Being rebuilt identifier-first. |
 | Claiming an item | **Does not exist.** No challenge, no ownership check. |
 | Photo upload | **Does not exist.** The API validates image *URLs the client must already host*. There is no storage. |
 | Staff authentication | **Does not exist.** `/staff` is open to anyone with the URL. |
-| Real trip data | **Not yet integrated.** The plan and the verified data sources are below. |
+| Database schema | **Implemented.** Drizzle migrations, 14 tables, identifier-first. Deny-by-default grants verified live against a real Postgres. |
+| Real trip data | **Not yet imported.** The schema and the verified sources are ready; the importer is not written. |
 | de / fr / it / en | **Assumption, not implemented.** One locale today. |
 
 `TODO.md` splits the rest by launch blocker / security / regulatory / later.
@@ -192,13 +193,23 @@ evidence points the same way — [Frey & Oberholzer-Gee (1997)](https://gwern.ne
 run on a real Swiss cantonal referendum, found that offering compensation
 *halved* acceptance (50.8% → 24.6%) and that raising the amount did not help.
 
+**Deny by default in the database, not only in the app.** `db/rls.sql` revokes
+everything from `PUBLIC`, enables *and forces* row-level security on all 14
+tables, and enumerates grants one table at a time — there is no
+`GRANT ... ON ALL TABLES`, because that would silently cover whatever is added
+next. The application connects as `fundbuero_app`, which owns nothing (a table
+owner bypasses RLS unless it is FORCEd). Reference data imported from open
+data is read-only to the app; `claim_resolutions` and `audit_events` have no
+UPDATE or DELETE at all, because a log the application can rewrite is not a
+log. Verified live: the app role reads reports and is refused on all three.
+
 **Retention is a column with a purge job,** not a paragraph. Under VPB Art. 77
 Abs. 4 a transport operator may auction a found item after three months — one
 month if it is worth ≤ CHF 50. Items found on transport premises must be handed
 to staff (ZGB Art. 720 Abs. 3, [SR 210](https://www.fedlex.admin.ch/eli/cc/24/233_245_233/de)).
 
 **The operator is configuration, not code.** Identity lives in
-`frontend/lib/tenant.ts` and one CSS block; `pnpm run check:tenant` fails the
+`lib/tenant.ts` and one CSS block; `pnpm run check:tenant` fails the
 build if an operator name appears anywhere else. `AGENTS.md` has the detail.
 
 ---
@@ -223,8 +234,12 @@ decision.
 
 ```bash
 pnpm install
-cd frontend && pnpm run dev      # http://localhost:3005 — fixtures, no backend
+pnpm run dev                     # http://localhost:3005 — fixtures, no backend
 ```
+
+One app, one `package.json`, one lockfile. There is no `frontend/` directory
+and no workspace: this is a modular monolith, and the module boundaries are
+directories, not deployment units.
 
 | Path | |
 |---|---|
@@ -235,14 +250,28 @@ cd frontend && pnpm run dev      # http://localhost:3005 — fixtures, no backen
 `pnpm run verify` is the single definition of green — format, types, lint,
 tests, and the tenant SSOT check. CI runs it verbatim.
 
-Full stack (Postgres + Redis + the not-yet-deployed services):
+### With a database
 
 ```bash
-pnpm run docker:up
+docker compose up -d
+export DATABASE_URL=postgresql://postgres:postgres@localhost:5433/sbb_fundbuero
+pnpm run db:setup      # migrations, then deny-by-default grants
+pnpm run db:seed       # fixtures, every row prefixed DEMO- / demo:
 ```
 
-⚠️ One `docker compose up` plus a seed does **not** yet produce a working system
-end to end. Making that true is a launch blocker; see `TODO.md`.
+That gives you a real schema with real data in it, on a clean machine, in
+three commands.
+
+⚠️ **Be precise about what that does and does not mean.** The database is real
+and the domain logic is real, but **the UI is not connected to either yet** —
+there are no route handlers, so the app still renders fixtures from
+`lib/mock-data.ts` regardless of whether Postgres is running. Wiring them up is
+the next piece of work, and until it lands, seeing data in the browser is not
+evidence that the database is being read.
+
+The seed is deliberately conspicuous: `DEMO-F-0001` shares an IMEI with
+`DEMO-R-0001` and must outrank `DEMO-F-0002`, which agrees only on words. That
+is the matching rule, visible in the data.
 
 ---
 

@@ -1,14 +1,19 @@
-# Workspace layout (moved here from package.json "workspaces" — pnpm's SSOT).
-# The frontend is intentionally NOT a workspace member: it keeps its own
-# lockfile and installs, exactly as it did under npm (`npm --prefix frontend`).
+# One package, and this file says so.
+#
+# It is not here to declare a workspace — there is only the app. It is here for
+# two reasons:
+#
+#   1. pnpm walks UP the directory tree looking for a workspace root. Without
+#      this file, an install run from a git worktree under .claude/worktrees/
+#      finds the PARENT checkout's pnpm-workspace.yaml and silently resolves
+#      against that instead ("Scope: all 6 workspace projects"), so the install
+#      you verified is not the install CI performs.
+#   2. pnpm 11 reads `allowBuilds` from here, not from package.json.
 packages:
-  - 'services/*'
-  - 'shared/*'
+  - '.'
+
 # pnpm 11 blocks dependency build scripts by default; allow only what we trust.
-# @scarf/scarf's "build" is analytics telemetry — deliberately denied.
 allowBuilds:
-  '@scarf/scarf': false
-  '@parcel/watcher': true
-  bcrypt: true
+  # drizzle-kit bundles with esbuild; its postinstall fetches the platform binary.
   esbuild: true
   unrs-resolver: true

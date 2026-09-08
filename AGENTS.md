@@ -62,8 +62,8 @@ An operator's identity lives in exactly two places:
 
 | File | Owns |
 |---|---|
-| `frontend/lib/tenant.ts` | Wordmark, legal name, product name, locale, operator code, theme colour |
-| `frontend/app/globals.css` | Palette + font, one `:root[data-tenant="…"]` block per operator |
+| `lib/tenant.ts` | Wordmark, legal name, product name, locale, operator code, theme colour |
+| `app/globals.css` | Palette + font, one `:root[data-tenant="…"]` block per operator |
 
 `<html data-tenant>` is set once in `app/layout.tsx`; every colour token keys off
 it, so the palette flips at runtime from one attribute. Adding an operator is
@@ -153,9 +153,9 @@ no backend is reachable from this build.
 
 ## Design system
 
-Token values live in `frontend/app/globals.css` as CSS custom properties.
-`frontend/tailwind.config.js` references those vars — **no literal hex**.
-`frontend/lib/design-system.ts` mirrors them for non-CSS contexts (OG images,
+Token values live in `app/globals.css` as CSS custom properties.
+`tailwind.config.js` references those vars — **no literal hex**.
+`lib/design-system.ts` mirrors them for non-CSS contexts (OG images,
 canvas) and must be kept in sync by hand.
 
 ```
@@ -181,7 +181,7 @@ Pre-built classes in `globals.css` — use them, do not rebuild inline:
 `.header-app` `.mobile-container` `.safe-top` `.safe-bottom` `.bottom-nav`
 `.modal-overlay` `.modal-content` `.toast` `.touch-feedback` `.hide-scrollbar`
 
-**Audit:** `grep -r '\[#' frontend/` — every hit is a violation.
+**Audit:** `grep -rn '\[#' app components lib` — every hit is a violation.
 
 ---
 
@@ -189,10 +189,14 @@ Pre-built classes in `globals.css` — use them, do not rebuild inline:
 
 ```bash
 pnpm install
-pnpm run verify        # format + build types + lint + typecheck + test + tenant SSOT
-pnpm run dev
-pnpm run docker:up     # Postgres + Redis + services
+pnpm run verify        # format + lint + typecheck + test + tenant SSOT
+pnpm run dev           # http://localhost:3005
+pnpm run docker:up     # Postgres
 ```
+
+One app at the repository root — one `package.json`, one lockfile, no
+workspace. Module boundaries are directories (`lib/domain`, `lib/db`,
+`app/api`), not deployment units.
 
 `verify` is the single definition of "green". CI calls it verbatim, so green
 locally means green in CI. Do not add a check to CI that is not in `verify` — a
@@ -206,7 +210,7 @@ Target **WCAG 2.2 AA**, and test it rather than assuming it. This is public
 transport: keyboard navigable, screen-reader labelled, sufficient contrast, no
 colour-only signalling, respects reduced motion.
 
-`frontend/lib/__tests__/contrast.test.ts` asserts contrast ratios on the token
+`lib/__tests__/contrast.test.ts` asserts contrast ratios on the token
 pairs actually used together. It caught white-on-amber at 2.15:1 on the one
 badge a passenger sees while still hoping.
 
@@ -215,6 +219,6 @@ badge a passenger sees while still hoping.
 ## Four languages
 
 de, fr, it, en. Switzerland is quadrilingual and the schema already anticipates
-it. `frontend/lib/labels.ts` is the SSOT for UI text but currently holds one
+it. `lib/labels.ts` is the SSOT for UI text but currently holds one
 locale — it is a single-language SSOT, not i18n. No hardcoded strings in
 components either way.

@@ -1,18 +1,10 @@
 name: CI
 
-# Minimal CI floor for this scaffold: build the shared types package, then
-# type-check every backend service AND the frontend. This is a compile/type gate
-# only — it keeps the scaffold from rotting without pretending to be a test suite.
-#
-# Intentionally NOT gated here (needs a human decision, see PR notes):
-#   * Lint. The services ship no ESLint config (and 3 of 4 lack the eslint dep),
-#     and the frontend's eslint-config-next@16 / eslint@9 / next@14 combo currently
-#     crashes ESLint. Wiring lint requires dependency changes, so it's out of scope
-#     for this additive floor.
-#   * Running the services / full E2E — needs docker-compose + Postgres + Redis infra.
-#
-# `pnpm run verify` (root package.json) is the single source of truth for these checks;
-# CI runs it verbatim so local green == CI green.
+# One app, one install, one gate. `pnpm run verify` (package.json) is the single
+# source of truth for what "green" means, and this workflow calls it verbatim so
+# green locally is green here. Do not inline a check that is not in `verify` —
+# a check nobody can run before pushing is a check that only fails after
+# pushing.
 
 on:
   workflow_dispatch: {}
@@ -22,7 +14,7 @@ on:
 
 jobs:
   verify:
-    name: Verify (lint + typecheck + test)
+    name: Verify (format + lint + typecheck + test + tenant SSOT)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -35,21 +27,10 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            frontend/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install workspace dependencies (services + shared)
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # The frontend is deliberately not a workspace member — it keeps its own
-      # lockfile and installs, exactly as it did under npm.
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: pnpm install --frozen-lockfile
-
-      # SSOT: the gate bundle is defined once, in package.json `verify`, and CI
-      # calls it verbatim. Do not inline checks here — a check that exists only
-      # in CI cannot be run before pushing, which is the whole point of verify.
-      - name: Verify (build shared types, lint + typecheck + test, tenant SSOT)
+      - name: Verify
         run: pnpm run verify
