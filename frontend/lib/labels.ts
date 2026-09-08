@@ -17,9 +17,15 @@ export const NOTIFICATION_STATUS_CONFIG = {
     textColor: 'text-white',
   },
   acknowledged: {
+    // White on amber was 2.15:1 — the worst contrast in the app, and on the
+    // one badge a passenger sees while still hoping. Amber is too light to
+    // carry white text at any usable saturation, so the text goes dark
+    // instead: charcoal on --app-warning is 8.49:1. Also drops the raw
+    // Tailwind `amber-500`, which was the only palette colour in this file
+    // that did not come from the token SSOT.
     label: 'In Bearbeitung',
-    color: 'bg-amber-500',
-    textColor: 'text-white',
+    color: 'bg-app-warning',
+    textColor: 'text-app-charcoal',
   },
   found: {
     label: 'Gefunden',

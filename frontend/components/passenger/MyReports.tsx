@@ -49,7 +49,7 @@ export function MyReports() {
                   </div>
 
                   <p className="text-app-sm text-app-granite mt-0.5">{report.location}</p>
-                  <p className="text-app-xs text-app-smoke mt-1">
+                  <p className="text-app-xs text-app-granite mt-1">
                     {UI_LABELS.myReports.reportedAt} {formatRelativeTime(report.createdAt)}
                     {report.passengerInfo?.tripRoute && ` • ${report.passengerInfo.tripRoute}`}
                   </p>
