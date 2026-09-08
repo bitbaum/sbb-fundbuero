@@ -13,16 +13,17 @@ tracked; there is no second list.
 
 Nothing here is optional before this is described to anyone as working.
 
-- [ ] **The found half of a lost-and-found does not exist.** `found_items` is
-      declared in the schema and queried by the matching service, but
-      `grep -rn 'INSERT INTO found_items'` over every `.ts` and `.sql` returns
-      zero — including the seed. Matching queries a permanently empty table and
-      can only ever return nothing. A table plus a query is not an ability.
+- [x] ~~**The found half of a lost-and-found does not exist.**~~ Done:
+      `POST /api/found-items` writes them, matching runs on both sides, and the
+      seed creates one. Verified end to end against a live database.
 - [ ] **No claim flow.** Anyone who sees a found item can claim it. Needs the
       challenge-based resolution described in `AGENTS.md`, and found-item
       details private by default until then.
-- [ ] **`/staff` has no authentication of any kind.** No session, no login, no
-      guard — the page renders passenger reports to anyone who opens the URL.
+- [ ] **Staff authentication is a single shared token, not accounts.**
+      `lib/server/auth.ts` closed the open door — every staff route now checks
+      a server-side secret and FAILS CLOSED when none is configured — but there
+      is still no per-person identity, so `claim_resolutions.resolver_name` is
+      whatever the actor typed. Real accounts are the remaining work.
 - [ ] **Photo upload is declared but impossible.** `images` validates as
       `Joi.array().items(Joi.string().uri())` — URLs the client must already
       host. There is no upload route, no storage, no presign, nothing.
