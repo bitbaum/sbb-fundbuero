@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: sbb-lost-found
-  labels:
-    app.kubernetes.io/name: sbb-lost-found
-    app.kubernetes.io/component: namespace

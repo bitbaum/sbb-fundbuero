@@ -1,4 +1,4 @@
--- SBB Lost and Found Database Schema
+-- SBB Fundbüro Database Schema
 -- Optimized for high-scale operations across Swiss public transport
 
 -- Extensions

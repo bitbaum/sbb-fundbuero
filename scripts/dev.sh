@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Development startup script for SBB Lost & Found
+# Development startup script for SBB Fundbüro
 # Starts all services needed for local development
 
 set -e
 
-echo "🚂 SBB Lost & Found - Development Environment"
+echo "🚂 SBB Fundbüro - Development Environment"
 echo "=============================================="
 
 # Colors for output

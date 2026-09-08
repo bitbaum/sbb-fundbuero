@@ -46,7 +46,7 @@ export const NOTIFICATION_STATUS_CONFIG = {
 export const QUICK_ACTIONS_CONFIG = [
   {
     id: 'lost-found',
-    title: 'Lost & Found',
+    title: 'Fundbüro',
     subtitle: 'Verlust sofort melden',
     icon: '🧳',
     gradient: 'from-brand to-brand-hover',

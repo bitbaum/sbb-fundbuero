@@ -14,7 +14,7 @@ export default function DemoPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl font-black tracking-wide">{tenant.wordmark}</span>
-            <span className="text-app-lg font-light opacity-90">Lost & Found</span>
+            <span className="text-app-lg font-light opacity-90">Fundbüro</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-semibold mb-2">
             Echtzeit-Verlustmeldung für den ÖV

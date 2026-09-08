@@ -5,7 +5,7 @@ async function testConnections() {
   console.log('Testing PostgreSQL connection...');
 
   const pgClient = new Client({
-    connectionString: 'postgresql://postgres:postgres@localhost:5433/sbb_lost_found',
+    connectionString: 'postgresql://postgres:postgres@localhost:5433/sbb_fundbuero',
   });
 
   try {

@@ -11,7 +11,7 @@ import './globals.css';
  * tag is emitted as http://localhost:3000/opengraph-image — present, plausible,
  * and unfetchable by every scraper. Falls back to the real host, not localhost.
  */
-const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sbb.orangecat.ch';
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sbbfundbuero.orangecat.ch';
 
 // Every operator-facing string comes from the tenant SSOT (lib/tenant.ts).
 // Nothing here names an operator.

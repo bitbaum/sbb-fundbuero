@@ -29,7 +29,7 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'SBB Lost and Found API - Reporting Service',
+      title: 'SBB Fundbüro API - Reporting Service',
       version: '1.0.0',
       description: 'Core reporting microservice for lost and found items',
     },

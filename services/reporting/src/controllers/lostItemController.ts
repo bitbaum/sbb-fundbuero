@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { LostItemRepository } from '../repositories/lostItemRepository';
-import { CreateLostItemRequest, SearchItemsQuery, ApiResponse } from '@sbb-lost-found/types';
+import { CreateLostItemRequest, SearchItemsQuery, ApiResponse } from '@sbb-fundbuero/types';
 import { logger } from '../utils/logger';
 import { redisPublisher } from '../config/redis';
 

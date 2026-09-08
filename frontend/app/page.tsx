@@ -136,7 +136,7 @@ function ProfilTab({ onOpenFundservice }: ProfilTabProps) {
           </div>
         </div>
         <div className="space-y-2">
-          {/* Fundservice - Lost & Found */}
+          {/* Fundservice - Fundbüro */}
           {onOpenFundservice && (
             <button
               onClick={onOpenFundservice}

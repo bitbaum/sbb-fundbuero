@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { LostItem, CreateLostItemRequest, SearchItemsQuery } from '@sbb-lost-found/types';
+import { LostItem, CreateLostItemRequest, SearchItemsQuery } from '@sbb-fundbuero/types';
 import { pool } from '../config/database';
 import { logger } from '../utils/logger';
 
