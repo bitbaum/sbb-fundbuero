@@ -16,7 +16,7 @@
  * is worse than an unbound one, because it looks like data.
  */
 
-import { and, asc, eq, gte, lte } from 'drizzle-orm';
+import { and, eq, gte, lte, sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 
 import { db, schema } from '@/db/client';
@@ -29,8 +29,21 @@ import { suggestTripsInput } from '@/lib/server/validation';
 
 export const dynamic = 'force-dynamic';
 
-/** Fetch a little wider than we rank, so the ranking has something to reject. */
-const FETCH_MARGIN_MINUTES = 30;
+/**
+ * How many candidates to pull before ranking.
+ *
+ * The limit is the dangerous part, not the number. An earlier version fetched
+ * a WIDER window than it ranked and ordered ascending — so at Zürich HB, which
+ * has 275 calls in a two-and-a-half hour window, the 50 rows it got back were
+ * the 50 EARLIEST, all of them far enough from the stated time that the ranker
+ * rejected every one. The endpoint returned "no journeys found" at a station
+ * with a train every thirty seconds.
+ *
+ * The seed's three journeys could never show this: it needs real data density.
+ * So the query now orders by PROXIMITY to the stated time, which makes the
+ * limit truncate the least relevant rows instead of the most relevant ones.
+ */
+const CANDIDATE_LIMIT = 60;
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -56,7 +69,7 @@ export async function GET(request: Request) {
 
   const at = new Date(parsed.data.at);
   const windowMinutes = parsed.data.windowMinutes ?? 45;
-  const margin = (windowMinutes + FETCH_MARGIN_MINUTES) * 60_000;
+  const margin = windowMinutes * 60_000;
 
   try {
     const rows = await db()
@@ -78,8 +91,12 @@ export async function GET(request: Request) {
           lte(schema.journeyCalls.departureAt, new Date(at.getTime() + margin)),
         ),
       )
-      .orderBy(asc(schema.journeyCalls.departureAt))
-      .limit(50);
+      // Closest first. See CANDIDATE_LIMIT — ordering by time instead of by
+      // proximity is what made this return nothing at a busy station.
+      .orderBy(
+        sql`abs(extract(epoch from ${schema.journeyCalls.departureAt}) - ${Math.floor(at.getTime() / 1000)})`,
+      )
+      .limit(CANDIDATE_LIMIT);
 
     const candidates: CandidateJourney[] = [];
     for (const r of rows) {

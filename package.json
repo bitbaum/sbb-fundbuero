@@ -19,7 +19,9 @@
     "docker:down": "docker compose down",
     "db:generate": "drizzle-kit generate",
     "db:setup": "tsx scripts/db-setup.ts",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "gtfs:import": "tsx scripts/import-gtfs.ts",
+    "formations:harvest": "tsx scripts/harvest-formations.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

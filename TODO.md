@@ -93,6 +93,20 @@ Nothing here is optional before this is described to anyone as working.
 
 ---
 
+## Needs one free registration
+
+- [ ] **Register for an opentransportdata.swiss API key.** Free and
+      self-service at https://api-manager.opentransportdata.swiss/ — create an
+      Application and subscribe to the Formation Service. Then
+      `OPENTRANSPORTDATA_API_KEY=… pnpm run formations:harvest`, on a daily
+      cron.
+
+      This is the only item here with a deadline that does not wait: the
+      formation API answers for today..today+3 and there is no archive, so
+      every day without it is a day whose coach data cannot be reconstructed
+      later from any source. The harvester is written and refuses to run
+      without the key.
+
 ## Later
 
 Real work, but nothing here misleads anyone in the meantime.
@@ -102,7 +116,6 @@ Real work, but nothing here misleads anyone in the meantime.
       tram has to work out which operator to contact. This is the largest
       unaddressed gap in the Swiss picture, and it is out of scope until the
       single-operator case works end to end.
-- [ ] Occupancy and formation data to narrow "which coach was I in".
 - [ ] Push notifications rather than an open socket.
 - [ ] Offline queue for reports composed without signal.
 - [ ] Instrument time-to-report as a product metric, so the assumption the
