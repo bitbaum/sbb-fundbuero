@@ -53,6 +53,7 @@ module.exports = {
           'success-surface': 'var(--app-success-surface)',
           warning: 'var(--app-warning)',
           error: 'var(--app-error)',
+          'error-text': 'var(--app-error-text)',
           info: 'var(--app-info)',
         },
       },

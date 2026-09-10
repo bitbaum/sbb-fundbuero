@@ -141,20 +141,26 @@ describe('no hardcoded UI strings in components', () => {
   }
 
   /**
-   * A RATCHET, not a wish. 8 files hold literal prose today; this fails if a
-   * ninth appears, and the number comes down as the UI rewrite lands.
+   * A RATCHET, not a wish. It was 8; the UI rewrite brought it to 1.
    *
-   * Asserting zero now would mean either deleting the check or marking it
-   * skipped, and a skipped check is one nobody ever un-skips. Asserting
-   * "no worse than today" is the version that actually holds a line.
+   * The one left is app/opengraph-image.tsx, which renders a social preview
+   * IMAGE rather than UI: it is generated without a request locale, so it
+   * carries the tenant's language by design. Everything a passenger or crew
+   * member actually reads comes from lib/i18n.
+   *
+   * Asserting zero would mean either deleting the check or special-casing that
+   * file, and a check with an exception list rots into a list. One is the
+   * honest number.
    */
-  const LITERAL_PROSE_BASELINE = 8;
+  const LITERAL_PROSE_BASELINE = 1;
 
   it('finds the component tree at all', () => {
     // Guards the guard: with a wrong path this suite passes vacuously and the
     // ratchet silently protects nothing.
-    expect(tsxFiles(join(process.cwd(), 'components')).length).toBeGreaterThan(5);
-    expect(tsxFiles(join(process.cwd(), 'app')).length).toBeGreaterThan(3);
+    // Low thresholds on purpose: this exists to catch a WRONG PATH (which
+    // would make the ratchet pass vacuously), not to assert a file count.
+    expect(tsxFiles(join(process.cwd(), 'components')).length).toBeGreaterThan(1);
+    expect(tsxFiles(join(process.cwd(), 'app')).length).toBeGreaterThan(1);
   });
 
   it('does not add a component holding literal prose', () => {
@@ -165,8 +171,13 @@ describe('no hardcoded UI strings in components', () => {
       ...tsxFiles(join(process.cwd(), 'app')),
     ]) {
       const source = readFileSync(file, 'utf8');
-      // Prose between JSX tags: >Some words< — two or more letters plus a space.
-      if (/>[^<>{}]*[A-Za-zÄÖÜäöü]{2,}[^<>{}]*\s[^<>{}]*</.test(source)) {
+      // Prose between JSX tags: >Some words< — two or more letters plus a
+      // space. Code punctuation is excluded, because without it a TypeScript
+      // generic reads as prose: `useState<Report[]>(null);\n  const [x] =
+      // useState<` spans a `>` … `<` pair containing words and a space, and
+      // the check flagged two components that had no literal text at all.
+      // A check that fires on clean files is one people learn to ignore.
+      if (/>[^<>{}();=[\]]*[A-Za-zÄÖÜäöü]{2,}[^<>{}();=[\]]*\s[^<>{}();=[\]]*</.test(source)) {
         offenders.push(file.replace(process.cwd() + '/', ''));
       }
     }

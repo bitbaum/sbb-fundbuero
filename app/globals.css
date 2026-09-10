@@ -80,6 +80,11 @@
   --app-success-surface: color-mix(in srgb, var(--app-success) 10%, transparent);
   --app-warning: #ffab00;
   --app-error: #eb0000;
+  /* #eb0000 is 4.29:1 on --app-milk — BELOW AA, and error text is the text a
+     person most needs to read. It stays the FILL colour (white on it clears AA
+     as a pair); this darker red is for error TEXT. Two tokens because one
+     colour cannot be both a strong fill and accessible small text. */
+  --app-error-text: #b30000;
   --app-info: #2d327d;
 
   /* Spacing (4px grid) */
@@ -126,6 +131,15 @@
 }
 
 html {
+  /* The report flow has a FIXED action bar at the bottom, in the thumb's arc.
+     Without this, scrollIntoView parks a focused control directly UNDER that
+     bar: the element is visible and enabled, and the bar swallows the tap.
+     Playwright caught it as "subtree intercepts pointer events"; a person just
+     finds that the last suggestion in the list cannot be tapped.
+
+     Value is the bar's height (16 + 56 + 16) plus room to breathe. */
+  scroll-padding-bottom: 140px;
+
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
 }
@@ -331,6 +345,29 @@ body {
 }
 
 /* Accessibility */
+/* First thing in the tab order, invisible until focused. Four steps of form is
+   a long way to travel with a keyboard otherwise, and WCAG 2.4.1 asks for a way
+   past repeated blocks. It must become VISIBLE on focus — a skip link that
+   stays off-screen when focused is worse than none, because the keyboard user
+   lands somewhere they cannot see. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 12px 16px;
+  background: var(--app-white);
+  color: var(--app-charcoal);
+  border: 2px solid var(--brand);
+  border-radius: var(--app-radius-md);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -32,6 +32,31 @@ export const LOCALE_NAMES: Record<Locale, string> = {
 };
 
 const de = {
+  'nav.back': 'Zurück',
+  'nav.next': 'Weiter',
+
+  'time.now': 'jetzt',
+  'time.minutesShort': 'min',
+  'time.hoursShort': 'Std.',
+
+  'category.electronics': 'Elektronik',
+  'category.bags': 'Taschen',
+  'category.clothing': 'Kleidung',
+  'category.documents': 'Dokumente',
+  'category.keys': 'Schlüssel',
+  'category.wallet': 'Portemonnaie',
+  'category.glasses': 'Brille',
+  'category.umbrella': 'Regenschirm',
+  'category.other': 'Anderes',
+
+  'area.seat': 'Sitzplatz',
+  'area.table': 'Tisch',
+  'area.overhead': 'Gepäckablage',
+  'area.floor': 'Boden',
+  'area.wc': 'WC-Bereich',
+  'area.entrance': 'Einstieg',
+  'area.unknown': 'Weiss nicht',
+
   'app.conceptNotice': 'Unabhängiges Konzept — kein offizielles Produkt',
   'app.skipToContent': 'Zum Inhalt springen',
 
@@ -112,6 +137,31 @@ const de = {
 export type MessageKey = keyof typeof de;
 
 const fr: Record<MessageKey, string> = {
+  'nav.back': 'Retour',
+  'nav.next': 'Continuer',
+
+  'time.now': 'maintenant',
+  'time.minutesShort': 'min',
+  'time.hoursShort': 'h',
+
+  'category.electronics': 'Électronique',
+  'category.bags': 'Sacs',
+  'category.clothing': 'Vêtements',
+  'category.documents': 'Documents',
+  'category.keys': 'Clés',
+  'category.wallet': 'Portemonnaie',
+  'category.glasses': 'Lunettes',
+  'category.umbrella': 'Parapluie',
+  'category.other': 'Autre',
+
+  'area.seat': 'Place assise',
+  'area.table': 'Tablette',
+  'area.overhead': 'Porte-bagages',
+  'area.floor': 'Sol',
+  'area.wc': 'Toilettes',
+  'area.entrance': 'Entrée',
+  'area.unknown': 'Je ne sais pas',
+
   'app.conceptNotice': 'Concept indépendant — pas un produit officiel',
   'app.skipToContent': 'Aller au contenu',
 
@@ -186,6 +236,31 @@ const fr: Record<MessageKey, string> = {
 };
 
 const it: Record<MessageKey, string> = {
+  'nav.back': 'Indietro',
+  'nav.next': 'Avanti',
+
+  'time.now': 'adesso',
+  'time.minutesShort': 'min',
+  'time.hoursShort': 'h',
+
+  'category.electronics': 'Elettronica',
+  'category.bags': 'Borse',
+  'category.clothing': 'Abbigliamento',
+  'category.documents': 'Documenti',
+  'category.keys': 'Chiavi',
+  'category.wallet': 'Portafoglio',
+  'category.glasses': 'Occhiali',
+  'category.umbrella': 'Ombrello',
+  'category.other': 'Altro',
+
+  'area.seat': 'Posto a sedere',
+  'area.table': 'Tavolino',
+  'area.overhead': 'Portabagagli',
+  'area.floor': 'Pavimento',
+  'area.wc': 'Zona WC',
+  'area.entrance': 'Entrata',
+  'area.unknown': 'Non so',
+
   'app.conceptNotice': 'Concetto indipendente — non è un prodotto ufficiale',
   'app.skipToContent': 'Vai al contenuto',
 
@@ -259,6 +334,31 @@ const it: Record<MessageKey, string> = {
 };
 
 const en: Record<MessageKey, string> = {
+  'nav.back': 'Back',
+  'nav.next': 'Continue',
+
+  'time.now': 'just now',
+  'time.minutesShort': 'min',
+  'time.hoursShort': 'h',
+
+  'category.electronics': 'Electronics',
+  'category.bags': 'Bags',
+  'category.clothing': 'Clothing',
+  'category.documents': 'Documents',
+  'category.keys': 'Keys',
+  'category.wallet': 'Wallet',
+  'category.glasses': 'Glasses',
+  'category.umbrella': 'Umbrella',
+  'category.other': 'Other',
+
+  'area.seat': 'Seat',
+  'area.table': 'Table',
+  'area.overhead': 'Overhead rack',
+  'area.floor': 'Floor',
+  'area.wc': 'Toilet area',
+  'area.entrance': 'Entrance',
+  'area.unknown': "Don't know",
+
   'app.conceptNotice': 'Independent concept — not an official product',
   'app.skipToContent': 'Skip to content',
 

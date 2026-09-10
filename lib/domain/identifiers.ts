@@ -159,6 +159,24 @@ export function parseIdentifier(kind: IdentifierKind, raw: string): Identifier |
 }
 
 /**
+ * Work out what KIND of identifier someone typed.
+ *
+ * This exists because of a bug the browser found: the reporting form offered
+ * one identifier box — "serial number, IMEI or engraving" — and stored
+ * whatever was typed as `serial`. A passenger's IMEI was therefore recorded
+ * under a different kind from the same IMEI read off the device by staff, and
+ * `agreements()` compares kind AND value. The strongest signal in the system
+ * was silently disabled, and every symptom of it looked like "no match found".
+ *
+ * Only the IMEI can be detected, because only the IMEI carries a checksum: if
+ * 15 digits pass Luhn, calling it anything else is the guess. Everything else
+ * falls back to `serial`, which is the honest "we do not know which".
+ */
+export function detectIdentifierKind(raw: string): IdentifierKind {
+  return parseIdentifier('imei', raw) !== null ? 'imei' : 'serial';
+}
+
+/**
  * Identifier agreements between two sets, strongest kind first.
  *
  * Both sides must already be normalised — comparing a raw value against a
