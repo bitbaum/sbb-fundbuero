@@ -330,6 +330,21 @@ is the matching rule, visible in the data.
 
 ---
 
+## The live deployment
+
+https://sbbfundbuero.orangecat.ch runs the neutral house brand on its own
+Postgres (`sbb_fundbuero`), with a least-privilege `fundbuero_app` role that
+owns nothing and is granted per table.
+
+Two things about it are honest rather than finished:
+
+- The timetable is imported **per operating date**, for a small set of
+  stations, by hand. When the imported days run out the station suggestions go
+  empty. A nightly import would fix that; see `TODO.md`.
+- The **purge job is not on a cron yet**, and the deployment accepts real
+  contact details from the public. That is the one item on the list with a
+  clock on it.
+
 ## Attribution
 
 Timetable, journey and formation data from
