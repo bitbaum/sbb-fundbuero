@@ -14,20 +14,11 @@
 import { z } from 'zod';
 
 import { IDENTIFIER_KINDS } from '@/lib/domain/identifiers';
-
-export const CATEGORIES = [
-  'electronics',
-  'bags',
-  'clothing',
-  'documents',
-  'keys',
-  'wallet',
-  'glasses',
-  'umbrella',
-  'other',
-] as const;
-
-export const AREAS = ['seat', 'table', 'overhead', 'floor', 'wc', 'entrance', 'unknown'] as const;
+// One definition of the closed sets, shared with the UI that renders them.
+// Two lists would drift, and the drift would look like a passenger sending an
+// invalid category rather than like the bug it is.
+export { AREAS, CATEGORIES } from '@/lib/report-options';
+import { AREAS, CATEGORIES } from '@/lib/report-options';
 
 export const LOCALES = ['de', 'fr', 'it', 'en'] as const;
 

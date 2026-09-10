@@ -55,13 +55,6 @@ export const config = {
     enabled: process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || API_URL === '',
     mockDelay: 1500,
     autoNotify: true,
-    // Where the passenger view hands a report to the crew view when no
-    // notification service is reachable — see lib/demo-bus.ts. Versioned so a
-    // future shape change cannot be handed a stale payload from a visitor's
-    // browser.
-    handoffKey: 'sbb-lf.demo.reports.v1',
-    // Enough to show a shift's worth of reports; the point is the newest one.
-    handoffLimit: 10,
   },
 
   // Supported languages

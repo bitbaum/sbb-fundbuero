@@ -24,7 +24,9 @@ export const runtime = 'nodejs';
 const HEARTBEAT_MS = 25_000;
 
 export async function GET(request: Request) {
-  const auth = authoriseStaff(request);
+  // The one route that accepts a token on the URL: EventSource cannot send
+  // headers. See AuthOptions for why that is acceptable here and nowhere else.
+  const auth = authoriseStaff(request, { allowQueryToken: true });
   if (!auth.ok) {
     return new Response(JSON.stringify({ success: false, error: auth.reason }), {
       status: auth.status,

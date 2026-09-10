@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import Script from 'next/script';
-import { AppProvider } from '@/components/providers/AppProvider';
+
 import { ConceptNotice } from '@/components/ui/ConceptNotice';
+import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
+import { localeFromAcceptLanguage, translate } from '@/lib/i18n';
 import { tenant } from '@/lib/tenant';
 import './globals.css';
 
@@ -39,27 +42,42 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // NO maximumScale and NO userScalable:false.
+  //
+  // Those two were here, and they are a WCAG 2.2 failure (1.4.4 Resize Text):
+  // they stop a person pinch-zooming the form. On a phone, on a moving train,
+  // for someone who may not see well — in a domain covered by the BehiG — that
+  // is not a styling preference, it is locking people out. iOS has not needed
+  // the input-zoom workaround since text inputs are 16px, which ours are.
   themeColor: tenant.themeColor,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // The locale the visitor asked for, not the one the operator prefers.
+  // `de-CH` resolves to `de`; anything we do not have falls back.
+  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+
   return (
     // data-tenant is the single switch: globals.css keys every operator
     // override off it, so the whole palette changes from this one attribute.
-    <html lang={tenant.locale} data-tenant={tenant.id}>
+    <html lang={locale} data-tenant={tenant.id}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <AppProvider>
+        {/* First thing in the tab order, visible only when focused. Four steps
+            of form is a long way to travel with a keyboard otherwise. */}
+        <a href="#main" className="skip-link">
+          {translate(locale, 'app.skipToContent')}
+        </a>
+
+        <LocaleProvider locale={locale}>
           <div className="mobile-container">
             <ConceptNotice />
-            {children}
+            <main id="main">{children}</main>
           </div>
-        </AppProvider>
+        </LocaleProvider>
 
         {/* FleetCrown feedback widget — env-gated, see docs/architecture/feedback-widget.md */}
         {process.env.NEXT_PUBLIC_FC_WIDGET_TOKEN && (

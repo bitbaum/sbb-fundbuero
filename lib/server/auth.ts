@@ -25,7 +25,23 @@ export type AuthResult =
 const HEADER = 'x-staff-token';
 const COOKIE = 'staff_token';
 
-export function authoriseStaff(request: Request): AuthResult {
+export interface AuthOptions {
+  /**
+   * Also accept the token as a `token` query parameter.
+   *
+   * OFF by default and opt-in per route, because a token in a URL ends up in
+   * access logs, in `Referer` headers, and in browser history. Exactly one
+   * route sets it: /api/events, because EventSource cannot send headers and
+   * the alternative is no live updates for crew at all.
+   *
+   * The thing that makes that acceptable here and nowhere else is that this is
+   * a shared crew secret rather than a personal credential — it identifies no
+   * one, and rotating it costs one environment variable.
+   */
+  allowQueryToken?: boolean;
+}
+
+export function authoriseStaff(request: Request, options: AuthOptions = {}): AuthResult {
   const expected = process.env.STAFF_ACCESS_TOKEN;
 
   if (!expected || expected.length < 16) {
@@ -40,7 +56,7 @@ export function authoriseStaff(request: Request): AuthResult {
     };
   }
 
-  const presented = presentedToken(request);
+  const presented = presentedToken(request, options.allowQueryToken === true);
   if (!presented || !constantTimeEqual(presented, expected)) {
     return { ok: false, status: 401, reason: 'Staff token missing or incorrect.' };
   }
@@ -52,9 +68,14 @@ export function authoriseStaff(request: Request): AuthResult {
   return { ok: true, actor: actor && actor.length > 0 ? actor.slice(0, 120) : 'unnamed staff' };
 }
 
-function presentedToken(request: Request): string | null {
+function presentedToken(request: Request, allowQuery: boolean): string | null {
   const header = request.headers.get(HEADER);
   if (header) return header.trim();
+
+  if (allowQuery) {
+    const fromQuery = new URL(request.url).searchParams.get('token');
+    if (fromQuery) return fromQuery.trim();
+  }
 
   const authorization = request.headers.get('authorization');
   if (authorization?.startsWith('Bearer ')) return authorization.slice(7).trim();

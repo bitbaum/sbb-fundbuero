@@ -25,7 +25,7 @@
  *     Both are checked because --app-metal passes on white (4.54:1) and fails
  *     on milk (4.20:1) — the kind of near-miss a spot check waves through.
  *
- *  2. Every status badge in NOTIFICATION_STATUS_CONFIG must clear AA as a
+ *  2. Every badge in ALL_BADGE_TOKENS must clear AA as a
  *     PAIR, and must be built from design tokens at all. `bg-amber-500` was
  *     both: a raw Tailwind colour outside the SSOT, and white-on-amber at
  *     2.15:1 — the worst contrast in the app.
@@ -37,7 +37,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { NOTIFICATION_STATUS_CONFIG } from '../labels';
+import { ALL_BADGE_TOKENS } from '../badge-tokens';
 
 const FRONTEND = path.join(__dirname, '..', '..');
 const GLOBALS_CSS = path.join(FRONTEND, 'app', 'globals.css');
@@ -238,7 +238,7 @@ describe('no colour utility uses an opacity modifier', () => {
 
 describe('status badges are built from tokens and clear AA', () => {
   const cases = BLOCKS.flatMap(({ tenant }) =>
-    Object.entries(NOTIFICATION_STATUS_CONFIG).map(([status, cfg]) => ({
+    Object.entries(ALL_BADGE_TOKENS).map(([status, cfg]) => ({
       tenant,
       status,
       cfg,

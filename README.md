@@ -107,11 +107,12 @@ Read this before believing anything the running demo appears to do.
 |---|---|
 | Passenger reporting UI | **Implemented** |
 | Staff notification UI | **Implemented** |
-| Passenger → staff handoff in the live demo | **Fixture.** `lib/demo-bus.ts` passes reports between the two views through the browser's own storage. No server is involved. |
-| All data on the deployed site | **Fixture.** `lib/mock-data.ts`. The deployed build has no backend configured, so demo mode is on and declared. |
+| Passenger reporting flow | **Implemented and wired to the API.** Four steps, mobile-first; the fake operator-app tabs are gone. |
+| Crew view | **Implemented and wired**, live over SSE. |
 | Backend API | **Implemented and exercised against a live database.** Route handlers under `app/api`, SSE for staff push. |
 | Staff authentication | **Implemented, and deliberately minimal.** A single shared token, checked server-side, failing closed. Not per-person accounts — see `TODO.md`. |
-| The UI calling that API | **Not yet.** The pages still render fixtures; wiring them up is the next piece of work. |
+| The UI calling that API | **Done, and driven in a real browser.** A report filed through the form bound to `ch:1:sjyid:100001:18378-001` in 5 seconds of measured time-to-report; the crew view received it over SSE without a reload. |
+| de / fr / it / en | **Implemented.** Four typed catalogues; `de-CH` / `fr-CH` / `it-CH` resolve correctly and the pages render server-side in each. |
 | Recording a **found** item | **Implemented.** `POST /api/found-items`, staff only. This is the half of a lost-and-found that previously had no write path at all. |
 | Matching | **Implemented**, identifier-first, with the score breakdown persisted. Candidates come from identifiers, journey or line — never from description. |
 | Claiming an item | **Does not exist.** No challenge, no ownership check. |
@@ -120,7 +121,6 @@ Read this before believing anything the running demo appears to do.
 | Database schema | **Implemented.** Drizzle migrations, 14 tables, identifier-first. Deny-by-default grants verified live against a real Postgres. |
 | Real trip data | **Imported and proven.** 6,704 journeys and 9,034 calls for one operating day, distilled from 35,143,405 `stop_time` rows of the actual SBB feed. A report has been bound to `ch:1:sjyid:100001:19629-001` end to end. |
 | Coach-level data (formations) | **Harvester written, never run.** It needs a free API key nobody has registered yet, and it refuses to start without one. See below — this is the one irreversible gap. |
-| de / fr / it / en | **Assumption, not implemented.** One locale today. |
 
 `TODO.md` splits the rest by launch blocker / security / regulatory / later.
 
@@ -283,9 +283,8 @@ directories, not deployment units.
 
 | Path | |
 |---|---|
-| `/` | Passenger app |
-| `/staff` | Staff interface |
-| `/demo` | Concept overview |
+| `/` | The reporting flow — this is the product |
+| `/staff` | Crew view (needs `STAFF_ACCESS_TOKEN`) |
 
 `pnpm run verify` is the single definition of green — format, types, lint,
 tests, and the tenant SSOT check. CI runs it verbatim.
@@ -318,10 +317,9 @@ curl "localhost:3005/api/trips/suggest?stopId=demo:stop:zurich-hb&at=<ISO time>"
 curl -N -H "x-staff-token: $STAFF_ACCESS_TOKEN" localhost:3005/api/events
 ```
 
-⚠️ **Be precise about what that does and does not mean.** The API is real and
-was exercised against a live database. **The UI is not yet calling it** — the
-pages still render fixtures from `lib/mock-data.ts`, so seeing data in the
-browser is not evidence that any of this ran.
+The UI calls this API. There is no `lib/mock-data.ts` any more, and no
+fixture path in the app: with no database configured the pages fail visibly
+rather than rendering a persuasive product over nothing.
 
 The seed is deliberately conspicuous: `DEMO-F-0001` shares an IMEI with
 `DEMO-R-0001` and must outrank `DEMO-F-0002`, which agrees only on words. That
