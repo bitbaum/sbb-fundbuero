@@ -35,8 +35,11 @@ Nothing here is optional before this is described to anyone as working.
       applied by `pnpm run db:setup` along with `db/rls.sql`. The container's
       init hook is no longer used — it runs once on an empty volume and never
       again, which is a bootstrap rather than a migration system.
-- [ ] **Retention is not enforced anywhere.** No deletion deadline column, no
-      purge job. See *Regulatory*.
+- [x] ~~**Retention is not enforced anywhere.**~~ Done: `delete_after` on every
+      table holding personal data, and `pnpm run db:purge` reads it. Proved
+      against a real database — a report past its deadline is deleted by name,
+      its identifiers cascade, and nothing not yet due is touched. Still needs
+      a daily cron on the box.
 - [ ] **One language.** `lib/labels.ts` is a single-locale SSOT, not i18n. de,
       fr, it, en are all required.
 - [ ] **No `LICENSE` file**, while `README.md` carries an MIT badge. Either add
@@ -71,9 +74,14 @@ Nothing here is optional before this is described to anyone as working.
 
 ## Regulatory
 
-- [ ] **Retention deadlines as a column, with a scheduled purge.** Reports,
-      images and contact details. Enforced mechanically — retention that lives
-      in a document does not happen.
+- [x] ~~**Retention deadlines as a column, with a scheduled purge.**~~ Written
+      and tested (`scripts/purge-expired.ts`). The orphan clause carries an
+      hour's grace because a contact row is inserted moments before its report,
+      outside a transaction — without it a purge landing in that gap would
+      delete a contact whose report was about to reference it.
+- [ ] **Install the purge on a daily cron on the box.** The script exists and
+      works; nothing runs it yet. Until it does, retention is a column and a
+      good intention.
 - [ ] **VPB Art. 77 (SR 745.11)** governs found property in public transport,
       not the ZGB's general five-year rule: the operator counts as finder but
       may claim no finder's reward (Abs. 2), must notify a known loser and store

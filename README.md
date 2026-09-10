@@ -243,7 +243,10 @@ data is read-only to the app; `claim_resolutions` and `audit_events` have no
 UPDATE or DELETE at all, because a log the application can rewrite is not a
 log. Verified live: the app role reads reports and is refused on all three.
 
-**Retention is a column with a purge job,** not a paragraph. Under VPB Art. 77
+**Retention is a column with a purge job,** not a paragraph — `delete_after` on
+every table holding personal data, and `pnpm run db:purge` reads it. Verified
+against a real database: a report past its deadline goes, its identifiers
+cascade, and nothing not yet due is touched. Under VPB Art. 77
 Abs. 4 a transport operator may auction a found item after three months — one
 month if it is worth ≤ CHF 50. Items found on transport premises must be handed
 to staff (ZGB Art. 720 Abs. 3, [SR 210](https://www.fedlex.admin.ch/eli/cc/24/233_245_233/de)).
