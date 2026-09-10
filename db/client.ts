@@ -19,7 +19,6 @@ import * as schema from './schema';
 declare global {
   // `var` is required here: `let`/`const` in a global declaration do not
   // attach to globalThis, which is the whole point of this block.
-  // eslint-disable-next-line no-var, vars-on-top
   var __fundbueroSql: ReturnType<typeof postgres> | undefined;
 }
 

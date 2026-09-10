@@ -118,7 +118,8 @@ Read this before believing anything the running demo appears to do.
 | Photo upload | **Does not exist.** The API validates image *URLs the client must already host*. There is no storage. |
 
 | Database schema | **Implemented.** Drizzle migrations, 14 tables, identifier-first. Deny-by-default grants verified live against a real Postgres. |
-| Real trip data | **Not yet imported.** The schema and the verified sources are ready; the importer is not written. |
+| Real trip data | **Imported and proven.** 6,704 journeys and 9,034 calls for one operating day, distilled from 35,143,405 `stop_time` rows of the actual SBB feed. A report has been bound to `ch:1:sjyid:100001:19629-001` end to end. |
+| Coach-level data (formations) | **Harvester written, never run.** It needs a free API key nobody has registered yet, and it refuses to start without one. See below — this is the one irreversible gap. |
 | de / fr / it / en | **Assumption, not implemented.** One locale today. |
 
 `TODO.md` splits the rest by launch blocker / security / regulatory / later.
@@ -147,15 +148,52 @@ attribution mandatory. API keys are free and self-service at
 | **GTFS-RT** (delays, cancellations) | Free key, 5 req/min | |
 | **Occupancy forecast** | Free key | Forecast only, 92 days forward. |
 
+### Importing it
+
+```bash
+# 248 MB, no API key, no registration
+curl -L -o gtfs.zip "https://data.opentransportdata.swiss/dataset/3d2c18f9-9ef1-463f-a249-5c67604efd74/resource/25cc1beb-84a7-4db3-b780-3e1aa82889ea/download/gtfs_fp2026_20260905.zip"
+
+pnpm run gtfs:import -- --zip gtfs.zip --date 2026-09-10
+```
+
+Bounded by date and station on purpose. The feed is 3.83 GB open and
+`stop_times.txt` alone is 3.07 GB; importing everything would be hundreds of
+millions of rows to answer one question. One run against the real feed:
+
+```
+services active on 2026-09-10: 10125 (+202 / -35242 by exception)
+stations: 10, platforms mapped: 223
+trips: 212313 active of 2174758 total
+✓ imported 6704 journeys and 9034 calls
+  from 35,143,405 stop_time rows, feed version 20260905
+```
+
+Note the **−35,242 services removed by calendar exception**. Treating
+`calendar_dates.txt` as a filter rather than a layer would have imported tens
+of thousands of trains that do not run.
+
+Nothing is extracted to disk: `unzip -p` streams one member at a time. The
+importer relies on `stop_times.txt` being grouped by `trip_id`, and **checks
+that at runtime** rather than trusting it — a trip reappearing after its group
+closed aborts the import instead of silently importing half a journey.
+
 **We cannot get:**
 
 - **Historical train formation — at all.** The API rejects past dates
   (horizon: today + 3 days) and **no archive exists** (four candidate archive
-  endpoints probed, all 404). A loss report is always filed *after* the trip.
-  **If we want coach-level binding we have to harvest the formation feed
-  ourselves, daily, starting on day one.** Every unharvested day is permanently
-  unreconstructable. This is the highest-priority engineering task and the only
-  irreversible one.
+  endpoints probed, all 404). A loss report is always filed *after* the trip,
+  so coach-level binding is only ever possible against a formation captured on
+  the day.
+
+  `pnpm run formations:harvest` exists for exactly this and is the only
+  irreversible job here. **It has never run**, because it needs a free
+  self-service key from
+  [api-manager.opentransportdata.swiss](https://api-manager.opentransportdata.swiss/)
+  that nobody has registered. It refuses to start without one rather than
+  logging a shrug — a harvester that silently does nothing looks identical to
+  one working on a quiet day. **Every day it does not run is a day of coach
+  data that cannot be reconstructed from any source, ever.**
 - **Live vehicle positions.** Explicitly not published on the platform.
 - **Any API into SBB Fundservice / Nova Find / easyfind.** None found. Without
   one, we can only file into SBB the way a human does. (Not-found, not
