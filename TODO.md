@@ -105,9 +105,9 @@ Nothing here is optional before this is described to anyone as working.
 
 - [ ] **The timetable import needs a nightly cron.** Journeys are imported per
       OPERATING DATE, so the station suggestions go empty once the imported
-      days run out. The box currently holds a small window of days for two
-      stations, loaded by hand. Until a schedule refills it, the live demo has
-      an expiry date rather than a bug.
+      days run out. The box currently holds two operating days (2026-09-11 and
+      2026-09-12) for ten stations, loaded by hand. Until a schedule refills
+      it, the live demo has an expiry date rather than a bug.
 - [ ] **The purge job needs a daily cron.** `pnpm run db:purge` works and is
       tested; nothing runs it. Until then retention is a column and a good
       intention — and the deployment now accepts real contact details from the
