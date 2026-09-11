@@ -18,7 +18,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 // Same source as layout.tsx's metadataBase, minus the scheme.
-const SITE_HOST = (process.env.NEXT_PUBLIC_APP_URL || 'https://sbbfundbuero.orangecat.ch').replace(
+const SITE_HOST = (process.env.NEXT_PUBLIC_APP_URL || 'https://nordbahn.orangecat.ch').replace(
   /^https?:\/\//,
   '',
 );
