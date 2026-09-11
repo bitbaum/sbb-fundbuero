@@ -1,12 +1,12 @@
-# Nordbahn Fundbüro
+# SBB Fundbüro
 
 Report something lost on a train **while you are still on it**, bound to the
 actual journey, so staff can search before the vehicle reaches the depot.
 
 > **This is a concept, not an operational service.** It is not affiliated with,
-> endorsed by, or connected to SBB. "Nordbahn Fundbüro" is the house name, on an
-> invented operator, so that nothing here borrows the SBB brand — see
-> [Naming](#naming). Nothing here handles real lost property.
+> endorsed by, or connected to SBB. "SBB Fundbüro" is a working name and is
+> probably the wrong one — see [Naming](#naming). Nothing here handles real
+> lost property.
 
 ---
 
@@ -332,7 +332,7 @@ is the matching rule, visible in the data.
 
 ## The live deployment
 
-https://nordbahn.orangecat.ch runs the neutral house brand on its own
+https://sbbfundbuero.orangecat.ch runs the neutral house brand on its own
 Postgres (`sbb_fundbuero`), with a least-privilege `fundbuero_app` role that
 owns nothing and is granted per table.
 
