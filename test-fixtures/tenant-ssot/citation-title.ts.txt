@@ -1,0 +1,5 @@
+const S = {
+  publisher: 'watson',
+  title: 'Fundgegenstände im Zug: SBB erhöht Preise für verlorene Dinge',
+  url: 'https://example.invalid/',
+};

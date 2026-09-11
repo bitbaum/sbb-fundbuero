@@ -88,6 +88,18 @@
   --app-info: #2d327d;
 
   /* Spacing (4px grid) */
+  /* Text on the dark band.
+     The site has one dark section, and it broke an assumption the contrast
+     guard was built on: that all text sits on white or milk. `text-app-*`
+     tokens are checked against those two surfaces, so using one here would be
+     measured against the wrong background — passing or failing for reasons
+     unrelated to what renders. These two exist to be checked against
+     --app-charcoal instead, by the dark-surface property in
+     lib/__tests__/contrast.test.ts. Do NOT expose them as Tailwind text
+     utilities; that would route them back through the wrong check. */
+  --app-on-dark-muted: #bcbcbc;
+  --app-on-dark-faint: #909090;
+
   --app-space-xs: 4px;
   --app-space-sm: 8px;
   --app-space-md: 16px;
@@ -391,4 +403,152 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   The website shell.
+
+   The app lives in `.mobile-container` — 430px wide, a phone. The website is a
+   different surface for a different reader (someone deciding whether this is
+   worth an hour of their attention), so it gets its own container rather than
+   a wider variant of the phone. Both draw from the same tokens above; neither
+   defines a colour.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.site-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--app-white);
+  display: flex;
+  flex-direction: column;
+}
+
+/* One measure for the whole site. 1120px holds a three-column card row at a
+   comfortable width and still leaves the gutter on a 13" laptop. */
+.site-width {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: var(--app-space-lg);
+}
+
+@media (min-width: 768px) {
+  .site-width {
+    padding-inline: var(--app-space-xl);
+  }
+}
+
+/* Prose column. 68ch, not the full 1120px: a line of body text longer than
+   roughly 75 characters costs the reader the return sweep, which on an
+   evidence page is exactly where they give up. */
+.site-measure {
+  max-width: 68ch;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--app-white) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--app-cloud);
+}
+
+/* Nav links: the underline grows from the token, so a tenant swap moves it
+   too. `currentColor` would tie it to the text colour and lose the brand. */
+.site-navlink {
+  position: relative;
+  padding-block: var(--app-space-xs);
+  color: var(--app-granite);
+  transition: color 0.15s ease;
+}
+
+.site-navlink:hover {
+  color: var(--app-charcoal);
+}
+
+.site-navlink[aria-current='page'] {
+  color: var(--app-charcoal);
+}
+
+.site-navlink[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--brand);
+}
+
+/* A rule that reads as structure rather than decoration: full-bleed hairline
+   between sections, so the page has joints without boxes everywhere. */
+.site-rule {
+  border-top: 1px solid var(--app-cloud);
+}
+
+/* Numbers set large. `tabular-nums` so a column of figures lines up, and
+   `-0.02em` because the display sizes here are set from a text-optimised face
+   that tracks too loose above 32px. */
+.site-figure {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+/* Evidence badge. Three kinds, three token pairs — never colour alone, the
+   word is always present (WCAG 1.4.1). */
+.site-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--app-radius-sm);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.site-badge--published {
+  background: var(--brand-surface);
+  color: var(--brand-active);
+}
+
+.site-badge--measured {
+  background: var(--app-success-surface);
+  color: var(--app-success);
+}
+
+/* Amber on white is the contrast trap this repo already hit once (2.15:1).
+   Warning surface + charcoal text, not white-on-amber. */
+.site-badge--assumption {
+  background: color-mix(in srgb, var(--app-warning) 18%, var(--app-white));
+  color: var(--app-charcoal);
+}
+
+/* Respect a reader who has asked for less motion. The site has no animation
+   that carries meaning, so removing all of it loses nothing. */
+@media (prefers-reduced-motion: reduce) {
+  .site-navlink {
+    transition: none;
+  }
+}
+
+/* The dark band, and the only place its foregrounds are named.
+   `.site-dark` declares the surface; the two modifiers declare what may sit on
+   it. The contrast test reads these three rules out of this file and computes
+   the ratios, so a fourth modifier added later is checked automatically and a
+   colour swapped for a lighter one fails before it ships. */
+.site-dark {
+  background: var(--app-charcoal);
+  color: var(--app-white);
+}
+
+.site-dark-muted {
+  color: var(--app-on-dark-muted);
+}
+
+.site-dark-faint {
+  color: var(--app-on-dark-faint);
 }

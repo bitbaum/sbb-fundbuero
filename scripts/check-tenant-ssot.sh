@@ -22,11 +22,25 @@ PATTERN='SBB|Schweizerische Bundesbahnen|NORDBAHN|Nordbahn'
 # branding, and renaming them would make the demo data wrong).
 ALLOWED='lib/tenant.ts|app/globals.css|lib/mock-data.ts'
 
+# One further exemption, deliberately narrow: the `title:` line of a Source in
+# lib/research.ts. A published article's title is a quotation, and AGENTS.md
+# rule 1 requires the citation to be real — rewriting "Fundgegenstände im Zug:
+# SBB erhöht Preise" into a neutral paraphrase would make the reference not
+# match the article it points at, which is a worse failure than the one this
+# guard prevents.
+#
+# It is scoped to one file AND one field on purpose. Any other line in
+# research.ts naming an operator — a claim, a comment, a publisher — still
+# fails, because those are the places branding would actually creep back in.
+# lib/__tests__/tenant-ssot-guard.test.ts proves both halves.
+CITATION_EXEMPT="^lib/research\.ts:[0-9]+:[[:space:]]*title: '"
+
 echo "tenant SSOT: checking the app for hardcoded operator names…"
 
 hits=$(grep -rnE "$PATTERN" app components lib \
          --include='*.ts' --include='*.tsx' --include='*.css' \
-       | grep -vE "^($ALLOWED)" || true)
+       | grep -vE "^($ALLOWED)" \
+       | grep -vE "$CITATION_EXEMPT" || true)
 
 if [ -n "$hits" ]; then
   echo "" >&2
