@@ -195,6 +195,47 @@ const de = {
     'Ein Konzept, das nicht sagt, welche Hälfte bereits existiert, ist eine Attrappe mit besserem Satz. Darum steht es an jedem Punkt.',
   'site.status.built': 'Gebaut und lauffähig',
   'site.status.designed': 'Entworfen, nicht gebaut',
+
+  // ── The evidence base (lib/research.ts) ────────────────────────────────────
+  // Claims and their limits. `claim` is what may be said publicly; `limit` is
+  // the reading it does NOT support, shown next to it rather than in a
+  // footnote nobody reaches.
+  'research.items-handed-in.claim':
+    'Fundgegenstände, die dem Fundservice des Betreibers pro Jahr abgegeben werden',
+  'research.reunited-share.claim':
+    'Anteil der abgegebenen Fundstücke, die ihre Eigentümerin oder ihren Eigentümer wiederfinden',
+  'research.reunited-share.limit':
+    'Das ist der Anteil der Gegenstände, die den Dienst ERREICHEN. Über Gegenstände, die nie abgegeben werden, sagt er nichts.',
+  'research.reports-vs-finds.claim':
+    'Verlustmeldungen pro Jahr, gegenüber tatsächlich abgegebenen Fundstücken',
+  'research.reports-vs-finds.limit':
+    'Die beiden Zahlen werden unterschiedlich erhoben und lassen sich nicht sauber voneinander abziehen. Sie grenzen die Lücke ein, sie messen sie nicht.',
+  'research.wallet-return-empty.claim':
+    'Fremde, die sich bei der Eigentümerin eines Portemonnaies ohne Bargeld meldeten',
+  'research.wallet-return-money.claim':
+    'Fremde, die sich meldeten, wenn Bargeld im Portemonnaie lag',
+  'research.wallet-return-money.limit':
+    'Die Rückgabequote STEIGT mit dem Wert des Inhalts — das Gegenteil dessen, was Eigennutz erwarten liesse. Ehrlichkeit ist nicht die knappe Ressource.',
+  'research.wallet-return-big-money.claim':
+    'Fremde, die sich meldeten, wenn eine grosse Summe im Portemonnaie lag',
+  'research.wallet-channel.claim':
+    'In jedem Portemonnaie des Versuchs lag eine Visitenkarte mit der E-Mail-Adresse der Eigentümerin — gemessen wird also, was Menschen tun, wenn ein Kanal zur Eigentümerin existiert',
+  'research.wallet-channel.limit':
+    'Ein auf dem Sitz liegengebliebener Gegenstand trägt keine solche Karte. Das ist das für dieses Produkt entscheidende Detail der Studie — und dasjenige, das beim Zitieren am häufigsten wegfällt.',
+  'research.wallet-mechanism.claim':
+    'Die Autoren führen das Zurückgeben auf altruistische Anteilnahme und auf den Widerwillen zurück, sich selbst als Dieb zu sehen — beides wird stärker, je grösser der Verlust für die Eigentümerin ist',
+  'research.no-rewards.claim':
+    'Für prosoziales Verhalten zu bezahlen kann es verringern — Geld verdrängt das Motiv, das es kaufen soll',
+  'research.no-rewards.limit':
+    'Unabhängig davon darf ein Schweizer Transportunternehmen keinen Finderlohn beanspruchen (VPB Art. 77 Abs. 2, SR 745.11). Die rechtliche Schranke kommt zuerst; dies erklärt, warum ihre Aufhebung trotzdem ein Fehler wäre.',
+  'research.journeys-loaded.claim':
+    'Echte Fahrten und Halte für einen Betriebstag, aus dem veröffentlichten Fahrplan gewonnen',
+  'research.journeys-loaded.limit':
+    'Ein Betriebstag, nicht ein ganzes Jahr. Genug, um die Fahrtauswahl echt zu machen, nicht genug, um Nachfrage zu modellieren.',
+  'research.time-window.claim':
+    'Noch im Zug zu melden sollte die Chance erhöhen, dass ein Gegenstand wiedergefunden wird: Das Fahrzeug erreicht seine Endstation in 10 bis 30 Minuten, die Reinigung folgt 5 bis 15 Minuten später, und ein anderer Fahrgast kann den Gegenstand jederzeit mitnehmen',
+  'research.time-window.limit':
+    'Aus dem Mechanismus hergeleitet, NICHT gemessen. Keine veröffentlichte Zahl verbindet Meldezeit mit Rückgabequote; die viel wiederholte Behauptung «innerhalb von 30 Minuten melden» hat keine belegbare Quelle. Das Produkt misst die Meldezeit mit, damit sich das eines Tages beantworten lässt statt behaupten.',
 } as const;
 
 /**
@@ -367,6 +408,43 @@ const fr: Record<MessageKey, string> = {
     'Un concept qui ne dit pas quelle moitié existe déjà est un leurre mieux composé. C’est pourquoi c’est indiqué à chaque point.',
   'site.status.built': 'Construit et fonctionnel',
   'site.status.designed': 'Conçu, non construit',
+
+  // ── The evidence base (lib/research.ts) ────────────────────────────────────
+  'research.items-handed-in.claim':
+    'Objets trouvés remis chaque année au service des objets trouvés de l’exploitant',
+  'research.reunited-share.claim': 'Part des objets remis qui retrouvent leur propriétaire',
+  'research.reunited-share.limit':
+    'C’est la part des objets qui ATTEIGNENT le service. Elle ne dit rien des objets qui ne sont jamais remis.',
+  'research.reports-vs-finds.claim':
+    'Déclarations de perte par an, face aux objets effectivement remis',
+  'research.reports-vs-finds.limit':
+    'Les deux chiffres sont comptés différemment et ne se soustraient pas proprement. Ils encadrent la lacune, ils ne la mesurent pas.',
+  'research.wallet-return-empty.claim':
+    'Inconnus ayant contacté le propriétaire d’un portefeuille sans argent',
+  'research.wallet-return-money.claim':
+    'Inconnus ayant contacté le propriétaire lorsque le portefeuille contenait de l’argent',
+  'research.wallet-return-money.limit':
+    'Le taux de restitution AUGMENTE avec la valeur du contenu — l’inverse de ce que prédit l’intérêt personnel. L’honnêteté n’est pas la ressource rare.',
+  'research.wallet-return-big-money.claim':
+    'Inconnus ayant contacté le propriétaire lorsque le portefeuille contenait une grosse somme',
+  'research.wallet-channel.claim':
+    'Chaque portefeuille de l’expérience contenait une carte de visite avec l’adresse e-mail du propriétaire — ce qui est mesuré, c’est donc ce que font les gens lorsqu’un canal vers le propriétaire existe',
+  'research.wallet-channel.limit':
+    'Un objet oublié sur un siège ne porte aucune carte de ce genre. C’est le détail de l’étude le plus déterminant pour ce produit, et celui qui disparaît le plus souvent quand on la cite.',
+  'research.wallet-mechanism.claim':
+    'Les auteurs attribuent la restitution à une préoccupation altruiste et à l’aversion à se voir comme un voleur, deux ressorts qui se renforcent à mesure que la perte pour le propriétaire grandit',
+  'research.no-rewards.claim':
+    'Payer un comportement prosocial peut le réduire — l’argent évince le motif qu’il cherche à acheter',
+  'research.no-rewards.limit':
+    'Indépendamment de cela, une entreprise suisse de transport ne peut réclamer aucune récompense de trouveur (VPB art. 77 al. 2, RS 745.11). La barrière juridique vient en premier ; ceci explique pourquoi la lever resterait une erreur.',
+  'research.journeys-loaded.claim':
+    'Courses et arrêts réels pour une journée d’exploitation, extraits de l’horaire publié',
+  'research.journeys-loaded.limit':
+    'Une journée d’exploitation, pas une année entière. Assez pour rendre le choix du trajet réel, pas assez pour modéliser la demande.',
+  'research.time-window.claim':
+    'Signaler encore à bord devrait augmenter les chances de retrouver un objet : le véhicule atteint son terminus en 10 à 30 minutes, le nettoyage suit 5 à 15 minutes plus tard, et un autre voyageur peut emporter l’objet à tout moment',
+  'research.time-window.limit':
+    'Déduit du mécanisme, NON mesuré. Aucun chiffre publié ne relie le délai de signalement au taux de restitution ; l’affirmation très répétée « signaler dans les 30 minutes » n’a aucune source traçable. Le produit instrumente le délai de signalement afin qu’on puisse un jour y répondre plutôt que l’affirmer.',
 };
 
 const it: Record<MessageKey, string> = {
@@ -532,6 +610,43 @@ const it: Record<MessageKey, string> = {
     'Un concetto che non dice quale metà esiste già è un’imitazione con una composizione migliore. Per questo è indicato a ogni punto.',
   'site.status.built': 'Costruito e funzionante',
   'site.status.designed': 'Progettato, non costruito',
+
+  // ── The evidence base (lib/research.ts) ────────────────────────────────────
+  'research.items-handed-in.claim':
+    'Oggetti trovati consegnati ogni anno al servizio oggetti smarriti del gestore',
+  'research.reunited-share.claim': 'Quota degli oggetti consegnati che ritrovano il proprietario',
+  'research.reunited-share.limit':
+    'È la quota degli oggetti che RAGGIUNGONO il servizio. Non dice nulla sugli oggetti che non vengono mai consegnati.',
+  'research.reports-vs-finds.claim':
+    'Segnalazioni di smarrimento all’anno, a fronte degli oggetti effettivamente consegnati',
+  'research.reports-vs-finds.limit':
+    'Le due cifre sono rilevate in modo diverso e non si sottraggono in modo pulito. Delimitano la lacuna, non la misurano.',
+  'research.wallet-return-empty.claim':
+    'Sconosciuti che hanno contattato il proprietario di un portafoglio senza denaro',
+  'research.wallet-return-money.claim':
+    'Sconosciuti che hanno contattato il proprietario quando il portafoglio conteneva denaro',
+  'research.wallet-return-money.limit':
+    'Il tasso di restituzione AUMENTA con il valore del contenuto — l’opposto di quanto prevedrebbe l’interesse personale. L’onestà non è la risorsa scarsa.',
+  'research.wallet-return-big-money.claim':
+    'Sconosciuti che hanno contattato il proprietario quando il portafoglio conteneva una somma elevata',
+  'research.wallet-channel.claim':
+    'Ogni portafoglio dell’esperimento conteneva un biglietto da visita con l’indirizzo e-mail del proprietario — ciò che si misura è quindi che cosa fanno le persone quando esiste un canale verso il proprietario',
+  'research.wallet-channel.limit':
+    'Un oggetto lasciato su un sedile non porta alcun biglietto del genere. È il dettaglio dello studio più determinante per questo prodotto, e quello che più spesso viene omesso quando lo si cita.',
+  'research.wallet-mechanism.claim':
+    'Gli autori attribuiscono la restituzione alla preoccupazione altruistica e all’avversione a vedersi come ladri, due spinte che si rafforzano quanto più grande è la perdita per il proprietario',
+  'research.no-rewards.claim':
+    'Pagare un comportamento prosociale può ridurlo — il denaro spiazza il motivo che vorrebbe comprare',
+  'research.no-rewards.limit':
+    'Indipendentemente da ciò, un’impresa di trasporto svizzera non può pretendere alcuna ricompensa per il ritrovamento (VPB art. 77 cpv. 2, RS 745.11). La barriera giuridica viene prima; questo spiega perché rimuoverla resterebbe un errore.',
+  'research.journeys-loaded.claim':
+    'Corse e fermate reali per un giorno d’esercizio, ricavate dall’orario pubblicato',
+  'research.journeys-loaded.limit':
+    'Un giorno d’esercizio, non un anno intero. Abbastanza per rendere reale la scelta della corsa, non abbastanza per modellare la domanda.',
+  'research.time-window.claim':
+    'Segnalare ancora a bordo dovrebbe aumentare la probabilità che un oggetto venga ritrovato: il veicolo raggiunge il capolinea in 10-30 minuti, la pulizia segue dopo 5-15 minuti e un altro viaggiatore può portare via l’oggetto in qualsiasi momento',
+  'research.time-window.limit':
+    'Dedotto dal meccanismo, NON misurato. Nessuna cifra pubblicata collega il tempo di segnalazione al tasso di restituzione; l’affermazione molto ripetuta «segnalare entro 30 minuti» non ha una fonte tracciabile. Il prodotto misura il tempo di segnalazione affinché un giorno si possa rispondere invece di affermare.',
 };
 
 const en: Record<MessageKey, string> = {
@@ -696,6 +811,43 @@ const en: Record<MessageKey, string> = {
     'A concept that does not say which half already exists is a mock-up with better typesetting. So it is stated at every point.',
   'site.status.built': 'Built and running',
   'site.status.designed': 'Designed, not built',
+
+  // ── The evidence base (lib/research.ts) ────────────────────────────────────
+  'research.items-handed-in.claim':
+    'Items handed in to the operator’s lost-property service in a year',
+  'research.reunited-share.claim': 'Share of handed-in items reunited with their owner',
+  'research.reunited-share.limit':
+    'This is the share of items that REACH the service. It says nothing about items never handed in.',
+  'research.reports-vs-finds.claim':
+    'Loss reports filed each year, against items actually handed in',
+  'research.reports-vs-finds.limit':
+    'The two figures are counted differently and are not a clean subtraction. They bound the gap; they do not measure it.',
+  'research.wallet-return-empty.claim':
+    'Strangers who contacted the owner of a wallet containing no money',
+  'research.wallet-return-money.claim':
+    'Strangers who contacted the owner when the wallet contained money',
+  'research.wallet-return-money.limit':
+    'Return rates RISE with the value inside — the opposite of what self-interest predicts. Honesty is not the scarce resource.',
+  'research.wallet-return-big-money.claim':
+    'Strangers who contacted the owner when the wallet held a large sum',
+  'research.wallet-channel.claim':
+    'Every wallet in the experiment carried a business card with the owner’s email — the finding measures what people do when a channel to the owner exists',
+  'research.wallet-channel.limit':
+    'An item left on a seat carries no such card. This is the most load-bearing detail of the study for this product, and the one most often dropped when it is cited.',
+  'research.wallet-mechanism.claim':
+    'The authors attribute returning to altruistic concern plus an aversion to seeing oneself as a thief, both of which strengthen as the loss to the owner grows',
+  'research.no-rewards.claim':
+    'Paying for prosocial behaviour can reduce it — money crowds out the motive it tries to buy',
+  'research.no-rewards.limit':
+    'Independently, a Swiss transport operator may not claim a finder’s reward (VPB Art. 77 Abs. 2, SR 745.11). The legal bar comes first; this explains why removing it would still be a mistake.',
+  'research.journeys-loaded.claim':
+    'Real journeys and calls for one operating day, distilled from the published timetable feed',
+  'research.journeys-loaded.limit':
+    'One operating day, not a full year. Enough to make the trip picker real, not enough to model demand.',
+  'research.time-window.claim':
+    'Reporting while still aboard should raise the chance an item is recovered, because the vehicle reaches its terminus within 10–30 minutes, turnaround cleaning follows within 5–15, and another passenger may take the item at any point',
+  'research.time-window.limit':
+    'Reasoned from mechanism, NOT measured. No published figure links time-to-report to recovery rate; the widely repeated “report within 30 minutes” claim has no traceable source. The product instruments time-to-report so this can eventually be answered rather than asserted.',
 };
 
 export const CATALOGUES: Record<Locale, Record<MessageKey, string>> = { de, fr, it, en };

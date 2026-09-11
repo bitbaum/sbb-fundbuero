@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { useT } from '@/lib/i18n/LocaleProvider';
-import { tenant } from '@/lib/tenant';
 import type { MessageKey } from '@/lib/i18n';
 
 /**
@@ -15,26 +14,52 @@ import type { MessageKey } from '@/lib/i18n';
  * the server without making the whole layout dynamic per path. The underline
  * in globals.css keys off the same attribute, so the visual state and the
  * announced state can never disagree.
+ *
+ * WHY THE WORDMARK IS A PROP AND NOT AN IMPORT
+ *
+ * This component read `tenant.wordmark` from `lib/tenant.ts` directly, and it
+ * rendered the neutral house wordmark on a build whose every other surface —
+ * page title, footer, palette — named the livery tenant.
+ *
+ * `lib/tenant.ts` resolves from `NEXT_PUBLIC_TENANT`, and that variable has
+ * two different origins depending on where it is read. Next inlines it into
+ * the CLIENT bundle at build time; a server component reads it from the
+ * process at request time. Build without it and set it at runtime — which is
+ * exactly what a deploy that configures the unit rather than the build does —
+ * and the server renders one operator while the hydrated client renders
+ * another. The page title said one thing and the logo said the other.
+ *
+ * So the tenant is resolved once, on the server, and handed down. A client
+ * component cannot disagree with a value it is given.
+ * `lib/__tests__/tenant-client-boundary.test.ts` keeps it that way.
  */
 const LINKS: ReadonlyArray<{ href: string; key: MessageKey }> = [
   { href: '/how-it-works', key: 'site.nav.how' },
   { href: '/research', key: 'site.nav.research' },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ wordmark }: { wordmark: string }) {
   const t = useT();
   const pathname = usePathname();
 
   return (
     <header className="site-header">
-      <div className="site-width flex h-16 items-center justify-between gap-app-md">
+      {/* Wraps on purpose. At 390px the wordmark, two nav links and the action
+          do not fit on one line: the nav shredded into three lines and the
+          action was pushed off the right edge of the viewport. On small
+          screens the nav drops to its own full-width row below (`order-last`,
+          `w-full`); from `sm` up it returns to the single row. One markup, no
+          duplicated nav, no JavaScript. */}
+      <div className="site-width flex flex-wrap items-center justify-between gap-x-app-md gap-y-app-sm py-app-sm sm:h-16 sm:flex-nowrap sm:py-0">
         <Link href="/" className="flex shrink-0 items-baseline gap-2">
-          {/* The wordmark is the tenant's, never a literal. */}
-          <span className="text-app-lg font-bold tracking-tight text-brand">{tenant.wordmark}</span>
+          <span className="text-app-lg font-bold tracking-tight text-brand">{wordmark}</span>
           <span className="hidden text-app-sm text-app-granite sm:inline">Fundbüro</span>
         </Link>
 
-        <nav aria-label={t('site.nav.home')} className="flex items-center gap-app-lg text-app-sm">
+        <nav
+          aria-label={t('site.nav.home')}
+          className="order-last flex w-full items-center gap-app-lg text-app-sm sm:order-none sm:w-auto"
+        >
           {LINKS.map((l) => (
             <Link
               key={l.href}
@@ -45,13 +70,14 @@ export function SiteHeader() {
               {t(l.key)}
             </Link>
           ))}
-          <Link
-            href="/app"
-            className="rounded-app-md bg-brand px-app-md py-2 font-semibold text-brand-contrast hover:bg-brand-hover"
-          >
-            {t('site.nav.app')}
-          </Link>
         </nav>
+
+        <Link
+          href="/app"
+          className="shrink-0 rounded-app-md bg-brand px-app-md py-2 text-app-sm font-semibold text-brand-contrast hover:bg-brand-hover"
+        >
+          {t('site.nav.app')}
+        </Link>
       </div>
     </header>
   );

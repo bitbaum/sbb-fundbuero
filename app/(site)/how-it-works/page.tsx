@@ -77,9 +77,12 @@ export default async function Page() {
               not measured — and `lib/research.ts` types it `assumption`, so
               the badge here cannot disagree with the evidence base. */}
           <span className="site-badge site-badge--assumption">{t('site.research.assumption')}</span>
-          <p className="site-measure mt-app-md text-app-lg text-app-charcoal">{timeWindow.claim}</p>
+          <p className="site-measure mt-app-md text-app-lg text-app-charcoal">
+            {t(timeWindow.claim)}
+          </p>
           <p className="site-measure mt-app-md text-app-sm text-app-granite">
-            <span className="font-semibold">{t('site.research.limit')}:</span> {timeWindow.limit}
+            <span className="font-semibold">{t('site.research.limit')}:</span>{' '}
+            {t(timeWindow.limit!)}
           </p>
         </div>
       </section>

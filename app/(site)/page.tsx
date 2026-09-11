@@ -84,7 +84,7 @@ export default async function Page() {
               </dd>
             </div>
             <div className="rounded-app-lg bg-app-white p-app-lg">
-              <dt className="text-app-sm text-app-granite">{reunited.claim}</dt>
+              <dt className="text-app-sm text-app-granite">{t(reunited.claim)}</dt>
               <dd className="site-figure mt-app-sm text-app-3xl font-bold text-app-charcoal">
                 {reunited.value}
               </dd>
@@ -118,7 +118,7 @@ export default async function Page() {
           {wallets.map((w) => (
             <li key={w.id} className="rounded-app-lg border border-app-cloud p-app-lg">
               <p className="site-figure text-app-3xl font-bold text-brand">{w.value}</p>
-              <p className="mt-app-sm text-app-sm text-app-granite">{w.claim}</p>
+              <p className="mt-app-sm text-app-sm text-app-granite">{t(w.claim)}</p>
             </li>
           ))}
         </ul>

@@ -24,6 +24,7 @@ const BADGE_KEY: Record<EvidenceKind, MessageKey> = {
 export function EvidenceCard({ evidence, locale }: { evidence: Evidence; locale: Locale }) {
   const t = translator(locale);
   const { kind, claim, value, source, limit } = evidence;
+  // `claim` and `limit` are message keys, not sentences — see lib/research.ts.
 
   return (
     <article className="border-t border-app-cloud py-app-lg">
@@ -33,11 +34,11 @@ export function EvidenceCard({ evidence, locale }: { evidence: Evidence; locale:
         <p className="site-figure mt-app-sm text-app-3xl font-bold text-app-charcoal">{value}</p>
       )}
 
-      <p className="site-measure mt-app-sm text-app-base text-app-charcoal">{claim}</p>
+      <p className="site-measure mt-app-sm text-app-base text-app-charcoal">{t(claim)}</p>
 
       {limit && (
         <p className="site-measure mt-app-sm text-app-sm text-app-granite">
-          <span className="font-semibold">{t('site.research.limit')}:</span> {limit}
+          <span className="font-semibold">{t('site.research.limit')}:</span> {t(limit)}
         </p>
       )}
 

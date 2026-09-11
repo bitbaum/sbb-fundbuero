@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { SiteFooter } from '@/components/site/SiteFooter';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { localeFromAcceptLanguage } from '@/lib/i18n';
+import { tenant } from '@/lib/tenant';
 
 /**
  * The website.
@@ -16,7 +17,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="site-shell">
-      <SiteHeader />
+      {/* Resolved here, on the server, and handed down. A client component
+          reading NEXT_PUBLIC_TENANT gets the value inlined at BUILD time,
+          which is a different answer from the server's runtime read — see
+          the note in SiteHeader. */}
+      <SiteHeader wordmark={tenant.wordmark} />
       <main id="main" className="flex-1">
         {children}
       </main>
