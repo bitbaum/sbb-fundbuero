@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import Script from 'next/script';
 
-import { ConceptNotice } from '@/components/ui/ConceptNotice';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import { localeFromAcceptLanguage, translate } from '@/lib/i18n';
 import { tenant } from '@/lib/tenant';
@@ -69,15 +68,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* First thing in the tab order, visible only when focused. Four steps
             of form is a long way to travel with a keyboard otherwise. */}
         <a href="#main" className="skip-link">
-          {translate(locale, 'app.skipToContent')}
+          {translate(locale, 'site.skipToContent')}
         </a>
 
-        <LocaleProvider locale={locale}>
-          <div className="mobile-container">
-            <ConceptNotice />
-            <main id="main">{children}</main>
-          </div>
-        </LocaleProvider>
+        {/* The shell below this point belongs to the route group: the website
+            renders full-width in `(site)`, the phone renders 430px wide in
+            `(app)`. Both own their own <main id="main">, which is what the
+            skip link above targets. Putting one container here would have
+            forced the website into the app's phone frame. */}
+        <LocaleProvider locale={locale}>{children}</LocaleProvider>
 
         {/* FleetCrown feedback widget — env-gated, see docs/architecture/feedback-widget.md */}
         {process.env.NEXT_PUBLIC_FC_WIDGET_TOKEN && (

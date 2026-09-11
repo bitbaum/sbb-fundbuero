@@ -265,3 +265,77 @@ describe('status badges are built from tokens and clear AA', () => {
     expect(verdict).toBe(measured);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Property 3 — the dark band's foregrounds clear AA against the dark band.
+// ---------------------------------------------------------------------------
+
+/**
+ * Property 1 checks every text token against white and milk, because for the
+ * whole life of the app those were the only two surfaces text sat on. The
+ * website broke that: it has a charcoal section, and a token measured against
+ * white tells you nothing about what renders on charcoal.
+ *
+ * The tempting fix — "just use white text there" — is the one that rots. The
+ * section has three levels of emphasis, someone will reach for a grey, and no
+ * existing check would have an opinion about it.
+ *
+ * So the surface and its permitted foregrounds are declared together in
+ * globals.css, and this reads those rules back out. A new `.site-dark-*`
+ * modifier is picked up without touching this file; a colour lightened past
+ * legibility fails here first.
+ */
+describe('the dark band', () => {
+  const css = fs.readFileSync(GLOBALS_CSS, 'utf8');
+
+  /** Every `.site-dark…` rule, as selector + body. */
+  function darkRules(): { selector: string; body: string }[] {
+    const out: { selector: string; body: string }[] = [];
+    const re = /\n(\.site-dark[a-z-]*)\s*\{([^}]*)\}/g;
+    for (let m = re.exec(css); m !== null; m = re.exec(css)) {
+      out.push({ selector: m[1], body: m[2] });
+    }
+    return out;
+  }
+
+  /** `background: var(--app-x)` / `color: var(--app-x)` -> the token's hex. */
+  function declared(body: string, prop: 'background' | 'color'): string | null {
+    const m = new RegExp(`${prop}:\\s*var\\(--([a-z0-9-]+)\\)`).exec(body);
+    return m ? (DEFAULT_TOKENS[m[1]] ?? null) : null;
+  }
+
+  const rules = darkRules();
+  const base = rules.find((r) => r.selector === '.site-dark');
+
+  it('declares the surface it is named for', () => {
+    // If `.site-dark` stops setting a background from a token, every ratio
+    // below would be computed against nothing — the check would pass by
+    // having no surface left to fail against.
+    expect(base).toBeDefined();
+    expect(declared(base!.body, 'background')).toMatch(/^#[0-9a-f]{6}$/);
+  });
+
+  it('finds more than one foreground to check (guards against the scan breaking)', () => {
+    expect(rules.filter((r) => declared(r.body, 'color') !== null).length).toBeGreaterThan(1);
+  });
+
+  it('renders no foreground below AA on the dark surface', () => {
+    const surface = declared(base!.body, 'background')!;
+    const failures = rules
+      .map((r) => ({ selector: r.selector, fg: declared(r.body, 'color') }))
+      .filter((r) => r.fg !== null && contrast(r.fg, surface) < AA_TEXT)
+      .map((r) => `${r.selector}  ${r.fg} on ${surface} = ${ratio(r.fg!, surface)}:1`);
+
+    expect(failures).toEqual([]);
+  });
+
+  it('keeps the on-dark tokens out of the Tailwind text scale', () => {
+    // `text-app-on-dark-muted` would be picked up by property 1 and measured
+    // against white — the exact wrong-surface mistake this property exists to
+    // prevent. These tokens belong to globals.css only.
+    const sources = sourceFiles()
+      .map((f) => fs.readFileSync(f, 'utf8'))
+      .join('\n');
+    expect(sources).not.toMatch(/text-app-on-dark/);
+  });
+});
