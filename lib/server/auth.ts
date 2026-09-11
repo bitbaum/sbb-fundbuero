@@ -94,6 +94,39 @@ function presentedToken(request: Request, allowQuery: boolean): string | null {
 }
 
 /**
+ * Authorisation for scheduled jobs.
+ *
+ * The box runs each app's crons as systemd timers that call a route on
+ * localhost with `Authorization: Bearer $CRON_SECRET`, the secret read from
+ * the app's env at fire time (fleetcrown `install-app-crons.sh`). This is the
+ * receiving side of that contract, and it is the SAME shape as staff access:
+ * fails closed on a missing or short secret, constant-time on the compare.
+ *
+ * Bearer only. A cron has no browser, so no cookie form and no query form —
+ * every extra way in is a way in that has to be defended.
+ */
+export function authoriseCron(request: Request): AuthResult {
+  const expected = process.env.CRON_SECRET;
+  if (!expected || expected.length < 16) {
+    return {
+      ok: false,
+      status: 503,
+      reason:
+        'Scheduled jobs are not configured on this deployment. ' +
+        'Set CRON_SECRET (at least 16 characters).',
+    };
+  }
+
+  const authorization = request.headers.get('authorization');
+  const presented = authorization?.startsWith('Bearer ') ? authorization.slice(7).trim() : null;
+  if (!presented || !constantTimeEqual(presented, expected)) {
+    return { ok: false, status: 401, reason: 'Cron secret missing or incorrect.' };
+  }
+
+  return { ok: true, actor: 'scheduled job' };
+}
+
+/**
  * Compare without leaking the answer through timing.
  *
  * `a === b` on secrets returns as soon as two bytes differ, which tells an

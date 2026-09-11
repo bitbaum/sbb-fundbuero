@@ -343,9 +343,11 @@ Two things about it are honest rather than finished:
   Genève, Lausanne, Luzern, Winterthur, Zürich Flughafen, Zürich HB). After
   the last of those days the station suggestions go empty. A nightly import
   would fix that; see `TODO.md`.
-- The **purge job is not on a cron yet**, and the deployment accepts real
-  contact details from the public. That is the one item on the list with a
-  clock on it.
+- The **purge** runs as `POST /api/cron/purge`, called by a systemd timer on
+  the box with a bearer secret (fleetcrown's `appcron-*` mechanism). Whether
+  that timer has fired successfully is recorded in `TODO.md`, not assumed
+  here. The deployment accepts real contact details from the public, so this
+  is the one item with a clock on it.
 
 ## Attribution
 

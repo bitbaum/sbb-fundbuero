@@ -144,6 +144,15 @@ be; `TODO.md` carries accounts as the remaining work.
 503 rather than 401 when unconfigured, on purpose: the caller did nothing wrong
 and a different token will not help.
 
+Scheduled jobs use the same shape with a second secret. `authoriseCron` checks
+`CRON_SECRET`, bearer form only, and `POST /api/cron/purge` is its one caller.
+The production release is a Next standalone build with no `scripts/` and no
+`tsx`, so a job that must run on the box has to be a route the box's timer can
+call (fleetcrown `install-app-crons.sh`) — the purge is, and its logic lives in
+`lib/server/purge.ts` so the script and the route are two callers of one
+function. The same constraint is why the timetable import is NOT a cron yet: a
+248 MB download and a 3 GB stream-parse is not an HTTP request.
+
 ### Staff push is SSE, and the bus is in-process
 
 One direction, plain HTTP, browser-owned reconnect. The limit is stated rather

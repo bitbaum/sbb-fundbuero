@@ -38,8 +38,9 @@ Nothing here is optional before this is described to anyone as working.
 - [x] ~~**Retention is not enforced anywhere.**~~ Done: `delete_after` on every
       table holding personal data, and `pnpm run db:purge` reads it. Proved
       against a real database — a report past its deadline is deleted by name,
-      its identifiers cascade, and nothing not yet due is touched. Still needs
-      a daily cron on the box.
+      its identifiers cascade, and nothing not yet due is touched. The box's
+      timer reaches it through `POST /api/cron/purge`; see "Keeping the live
+      deployment fed".
 - [ ] **One language.** `lib/labels.ts` is a single-locale SSOT, not i18n. de,
       fr, it, en are all required.
 - [ ] **No `LICENSE` file**, while `README.md` carries an MIT badge. Either add
@@ -79,9 +80,6 @@ Nothing here is optional before this is described to anyone as working.
       hour's grace because a contact row is inserted moments before its report,
       outside a transaction — without it a purge landing in that gap would
       delete a contact whose report was about to reference it.
-- [ ] **Install the purge on a daily cron on the box.** The script exists and
-      works; nothing runs it yet. Until it does, retention is a column and a
-      good intention.
 - [ ] **VPB Art. 77 (SR 745.11)** governs found property in public transport,
       not the ZGB's general five-year rule: the operator counts as finder but
       may claim no finder's reward (Abs. 2), must notify a known loser and store
@@ -108,10 +106,15 @@ Nothing here is optional before this is described to anyone as working.
       days run out. The box currently holds two operating days (2026-09-11 and
       2026-09-12) for ten stations, loaded by hand. Until a schedule refills
       it, the live demo has an expiry date rather than a bug.
-- [ ] **The purge job needs a daily cron.** `pnpm run db:purge` works and is
-      tested; nothing runs it. Until then retention is a column and a good
-      intention — and the deployment now accepts real contact details from the
-      public, so this one has a clock on it.
+- [ ] **Prove the purge timer fires.** The purge is `lib/server/purge.ts`,
+      reached by `POST /api/cron/purge` with `Authorization: Bearer
+      $CRON_SECRET` — the fleet's `appcron-<app>-<job>` mechanism, a systemd
+      timer on the box calling the route on localhost, with a Telegram alert
+      on failure. The route is written and tested and the registry row exists
+      in fleetcrown-apps `install-app-crons.sh` (03:30 UTC daily). Tick this
+      when `journalctl -u appcron-sbb-fundbuero-purge` shows an `HTTP 200`;
+      until then retention is a column and a good intention, and the
+      deployment accepts real contact details from the public.
 
 ## Needs one free registration
 
