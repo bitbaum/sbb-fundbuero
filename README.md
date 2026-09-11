@@ -332,7 +332,7 @@ is the matching rule, visible in the data.
 
 ## The live deployment
 
-https://sbbfundbuero.orangecat.ch runs the neutral house brand on its own
+https://nordbahn.orangecat.ch runs the neutral house brand on its own
 Postgres (`sbb_fundbuero`), with a least-privilege `fundbuero_app` role that
 owns nothing and is granted per table.
 

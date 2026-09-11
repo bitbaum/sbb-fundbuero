@@ -1,5 +1,5 @@
 {
-  "name": "sbb-fundbuero",
+  "name": "nordbahn-fundbuero",
   "version": "1.0.0",
   "description": "Report something lost on a train while you are still on it, bound to the real journey.",
   "private": true,
