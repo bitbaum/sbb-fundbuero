@@ -1,4 +1,4 @@
-# SBB Fundbüro: Eine Analyse aus ersten Prinzipien und Verbesserungsvorschlag
+# Nordbahn Fundbüro: Eine Analyse aus ersten Prinzipien und Verbesserungsvorschlag
 
 > **Faktencheck 2026-09-08.** Dieses Dokument stammt aus Januar 2026. Die
 > Kernanalyse hat sich bei der Überprüfung als richtig erwiesen — die Zahlen in
