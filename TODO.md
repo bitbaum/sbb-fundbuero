@@ -1,4 +1,4 @@
-# TODO — Nordbahn Fundbüro
+# TODO — SBB Fundbüro
 
 Split by what the item actually blocks. A thing is a **launch blocker** only if
 shipping without it would mislead a user or lose their data — not because it
@@ -112,11 +112,11 @@ Nothing here is optional before this is described to anyone as working.
       mechanism: a systemd timer on the box calling the route on localhost,
       Telegram alert on failure (fleetcrown #616, 03:30 UTC daily). Fired
       once by hand after the deploy of `5ad6b87`:
-      `appcron-nordbahn-fundbuero-purge.service` → `Result=success`, `HTTP 200`,
+      `appcron-sbb-fundbuero-purge.service` → `Result=success`, `HTTP 200`,
       and the app logged `0 reports, 0 found items, 0 contacts` — nothing was
       due, which is the correct answer for a database with no reports. From
       outside, the route answers 401 without the secret and 405 to GET. Check
-      any day with `journalctl -u appcron-nordbahn-fundbuero-purge -n 3`.
+      any day with `journalctl -u appcron-sbb-fundbuero-purge -n 3`.
 
 ## Needs one free registration
 

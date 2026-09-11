@@ -1,4 +1,4 @@
-# AGENTS.md — Nordbahn Fundbüro
+# AGENTS.md — SBB Fundbüro
 
 @~/.claude/CLAUDE.md
 

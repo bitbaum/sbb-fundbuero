@@ -1,8 +1,7 @@
 /**
  * The API base URL is inlined into the client bundle at build time, so a
  * localhost default is not a development convenience — it is a production
- * value. The old sbbfundbuero.orangecat.ch host (now nordbahn.orangecat.ch)
- * shipped `baseUrl: "http://localhost:3001"`, which
+ * value. sbbfundbuero.orangecat.ch shipped `baseUrl: "http://localhost:3001"`, which
  * pointed every visitor's browser at port 3001 of their own machine.
  *
  * These tests exist so that class of bug cannot come back quietly:
