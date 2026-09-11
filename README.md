@@ -336,18 +336,19 @@ https://sbbfundbuero.orangecat.ch runs the neutral house brand on its own
 Postgres (`sbb_fundbuero`), with a least-privilege `fundbuero_app` role that
 owns nothing and is granted per table.
 
-Two things about it are honest rather than finished:
+One thing about it is honest rather than finished, and one was finished on
+2026-09-11:
 
 - The timetable is imported **per operating date**, by hand. The box holds
   2026-09-11 and 2026-09-12 for ten stations (Aarau, Basel SBB, Bern, Chur,
   Genève, Lausanne, Luzern, Winterthur, Zürich Flughafen, Zürich HB). After
   the last of those days the station suggestions go empty. A nightly import
   would fix that; see `TODO.md`.
-- The **purge** runs as `POST /api/cron/purge`, called by a systemd timer on
-  the box with a bearer secret (fleetcrown's `appcron-*` mechanism). Whether
-  that timer has fired successfully is recorded in `TODO.md`, not assumed
-  here. The deployment accepts real contact details from the public, so this
-  is the one item with a clock on it.
+- The **purge** runs daily at 03:30 UTC as `POST /api/cron/purge`, called by
+  a systemd timer on the box with a bearer secret (fleetcrown's `appcron-*`
+  mechanism, Telegram alert on failure). It was fired once by hand after the
+  deploy and answered `HTTP 200`; `TODO.md` records the run. So the retention
+  column is now enforced, not intended.
 
 ## Attribution
 
