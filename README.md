@@ -119,7 +119,7 @@ Read this before believing anything the running demo appears to do.
 | Photo upload | **Does not exist.** The API validates image *URLs the client must already host*. There is no storage. |
 
 | Database schema | **Implemented.** Drizzle migrations, 14 tables, identifier-first. Deny-by-default grants verified live against a real Postgres. |
-| Real trip data | **Imported and proven.** 6,704 journeys and 9,034 calls for one operating day, distilled from 35,143,405 `stop_time` rows of the actual SBB feed. A report has been bound to `ch:1:sjyid:100001:19629-001` end to end. |
+| Real trip data | **Imported and proven.** 13,168 journeys and 17,809 calls across two operating days (2026-09-11 and 2026-09-12) at ten stations, distilled from 35,143,405 `stop_time` rows of the actual SBB feed (version 20260905) — the same data the live site serves. A report has been bound to `ch:1:sjyid:100001:19629-001` end to end. |
 | Coach-level data (formations) | **Harvester written, never run.** It needs a free API key nobody has registered yet, and it refuses to start without one. See below — this is the one irreversible gap. |
 
 `TODO.md` splits the rest by launch blocker / security / regulatory / later.
@@ -338,9 +338,11 @@ owns nothing and is granted per table.
 
 Two things about it are honest rather than finished:
 
-- The timetable is imported **per operating date**, for a small set of
-  stations, by hand. When the imported days run out the station suggestions go
-  empty. A nightly import would fix that; see `TODO.md`.
+- The timetable is imported **per operating date**, by hand. The box holds
+  2026-09-11 and 2026-09-12 for ten stations (Aarau, Basel SBB, Bern, Chur,
+  Genève, Lausanne, Luzern, Winterthur, Zürich Flughafen, Zürich HB). After
+  the last of those days the station suggestions go empty. A nightly import
+  would fix that; see `TODO.md`.
 - The **purge job is not on a cron yet**, and the deployment accepts real
   contact details from the public. That is the one item on the list with a
   clock on it.
