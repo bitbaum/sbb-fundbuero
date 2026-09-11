@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 
 import { EvidenceCard } from '@/components/site/EvidenceCard';
-import { localeFromAcceptLanguage, translate, translator } from '@/lib/i18n';
+import { translate, translator } from '@/lib/i18n';
+import { resolveLocale } from '@/lib/i18n/server';
 import { assumptions, citableEvidence, sources } from '@/lib/research';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
   return { title: translate(locale, 'site.nav.research') };
 }
 
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * reasoned is a structural feature of the page rather than an adverb.
  */
 export default async function Page() {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
   const t = translator(locale);
 
   return (

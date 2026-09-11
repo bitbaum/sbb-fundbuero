@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { headers } from 'next/headers';
 
 import { NOTIFY_CAPABILITIES, type CapabilityStatus } from '@/lib/capabilities';
-import { localeFromAcceptLanguage, translate, translator, type MessageKey } from '@/lib/i18n';
+import { resolveLocale } from '@/lib/i18n/server';
+import { translate, translator, type MessageKey } from '@/lib/i18n';
 import { EVIDENCE_BY_ID } from '@/lib/research';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
   return { title: translate(locale, 'site.nav.how') };
 }
 
@@ -43,7 +43,7 @@ const STATUS_CLASS: Record<CapabilityStatus, string> = {
 };
 
 export default async function Page() {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
   const t = translator(locale);
   const timeWindow = EVIDENCE_BY_ID['time-window'];
 

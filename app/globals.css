@@ -107,6 +107,15 @@
   --app-space-xl: 32px;
   --app-space-2xl: 48px;
 
+  /* Typography — SBB's metrics, from the Lyne design tokens.
+     Text and headings differ in BOTH line-height and tracking, which is why
+     they are two pairs and not one. Applied in `body` below and mirrored into
+     the Tailwind type scale, so a `text-app-*` class cannot quietly opt out. */
+  --app-line-height-text: 1.75;
+  --app-line-height-heading: 1.4;
+  --app-tracking-text: 0.03em;
+  --app-tracking-heading: 0em;
+
   /* Border Radius */
   --app-radius-sm: 4px;
   --app-radius-md: 8px;
@@ -131,7 +140,7 @@
   --brand-hover: #c60018;
   --brand-active: #a20013;
   --brand-contrast: #ffffff;
-  --font-brand: 'SBB Web';
+  --font-brand: 'SBB';
   --app-shadow-button: 0 2px 4px rgba(235, 0, 0, 0.24);
 }
 
@@ -149,16 +158,31 @@ html {
      Playwright caught it as "subtree intercepts pointer events"; a person just
      finds that the last suggestion in the list cannot be tapped.
 
-     Value is the bar's height (16 + 56 + 16) plus room to breathe. */
-  scroll-padding-bottom: 140px;
+     Value is the bar's height (16 + 56 + 16) plus room to breathe.
+
+     Scoped to the widths where the bar is actually fixed. Above 768px it is a
+     static control in the flow, and reserving 140px of scroll padding there
+     just stops the page scrolling to where you asked it to. */
+  @media (max-width: 767px) {
+    scroll-padding-bottom: 140px;
+  }
 
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
+  /* SBB sets body text at 1.75/0.03em. Headings override both — see `.sbb-heading`
+     and the Tailwind scale, where every size at or above 20px carries the
+     heading pair instead. */
+  line-height: var(--app-line-height-text);
+  letter-spacing: var(--app-tracking-text);
   font-family:
     var(--font-brand),
+    Inter,
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
@@ -395,6 +419,20 @@ body {
   @apply outline-2 outline-offset-2 outline-brand;
 }
 
+/* The step heading takes focus so a screen reader announces the new step.
+   It is NOT a keyboard destination the person chose — they pressed "Weiter"
+   and focus followed as a courtesy — so it must not paint a ring. The global
+   :focus-visible rule draws 2px of brand red, and a red box around the first
+   heading of a form, on load, reads as a validation error. That is the exact
+   opposite of the signal wanted at the top of a form nobody has filled in yet.
+
+   The focus itself stays: removing it would cost the announcement, which is
+   the whole reason the heading is focusable. Only the paint goes. */
+.step-heading:focus,
+.step-heading:focus-visible {
+  outline: none;
+}
+
 /* Hide scrollbar but keep functionality */
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -551,4 +589,40 @@ body {
 
 .site-dark-faint {
   color: var(--app-on-dark-faint);
+}
+
+/* Headings opt out of the text metrics.
+   SBB tracks headings at 0 and leads them at 1.4; body copy gets 0.03em and
+   1.75. Applying the text pair to a 48px headline makes it look like a
+   stretched paragraph, which is the single most common way a design lifted
+   from SBB stops looking like SBB. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: var(--app-line-height-heading);
+  letter-spacing: var(--app-tracking-heading);
+}
+
+/* The passenger app's canvas.
+   `.mobile-container` is a phone: 430px, full viewport height, a drop shadow
+   standing it off the page like a device on a desk. That is right on a phone
+   and wrong on a laptop, where it renders a narrow strip of form floating in
+   the middle of an empty window — and where the person is not on a train at
+   all, but reading the site and trying the thing.
+   Below `md` this is that phone. Above it, the flow becomes what it actually
+   is on a desktop: a form on a page. */
+.app-canvas {
+  width: 100%;
+  max-width: 430px;
+  margin-inline: auto;
+  background: var(--app-white);
+}
+
+@media (min-width: 768px) {
+  .app-canvas {
+    max-width: none;
+  }
 }

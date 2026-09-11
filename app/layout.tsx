@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next';
-import { headers } from 'next/headers';
 import Script from 'next/script';
 
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
-import { localeFromAcceptLanguage, translate } from '@/lib/i18n';
+import { resolveLocale } from '@/lib/i18n/server';
+import { translate } from '@/lib/i18n';
 import { tenant } from '@/lib/tenant';
 import './globals.css';
 
@@ -54,7 +54,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // The locale the visitor asked for, not the one the operator prefers.
   // `de-CH` resolves to `de`; anything we do not have falls back.
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
 
   return (
     // data-tenant is the single switch: globals.css keys every operator

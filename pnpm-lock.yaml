@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@bitbaum/ai-kit':
+        specifier: ^0.15.0
+        version: 0.15.0(react@19.2.8)
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(postgres@3.4.9)
@@ -243,6 +246,15 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@bitbaum/ai-kit@0.15.0':
+    resolution: {integrity: sha512-anYal45ZeoyF10HbtLVv3o1DPJGDNetbVjtdC6wHHVRW/IQIep4Y95tCKUW+Ftr5Gd6tLRalFfgZAsRdBewqUw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   '@cacheable/memory@2.2.0':
     resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
@@ -1349,6 +1361,15 @@ packages:
     resolution: {integrity: sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  ai-forms@0.1.2:
+    resolution: {integrity: sha512-agadca4pN0iGlZTlNy1Vo2SmnQB+0dNkrQSDE3wCJYeaVxKDs5KaxiwGj5+GL6mVYcI1xZ8pwnT9kL9WcxnBHA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: '>=18'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
@@ -3561,6 +3582,12 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
+  '@bitbaum/ai-kit@0.15.0(react@19.2.8)':
+    dependencies:
+      ai-forms: 0.1.2(react@19.2.8)
+    optionalDependencies:
+      react: 19.2.8
+
   '@cacheable/memory@2.2.0':
     dependencies:
       '@cacheable/utils': 2.5.0
@@ -4473,6 +4500,10 @@ snapshots:
       acorn: 8.18.0
 
   acorn@8.18.0: {}
+
+  ai-forms@0.1.2(react@19.2.8):
+    optionalDependencies:
+      react: 19.2.8
 
   ajv@6.15.0:
     dependencies:
