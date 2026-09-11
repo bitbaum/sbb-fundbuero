@@ -106,15 +106,17 @@ Nothing here is optional before this is described to anyone as working.
       days run out. The box currently holds two operating days (2026-09-11 and
       2026-09-12) for ten stations, loaded by hand. Until a schedule refills
       it, the live demo has an expiry date rather than a bug.
-- [ ] **Prove the purge timer fires.** The purge is `lib/server/purge.ts`,
-      reached by `POST /api/cron/purge` with `Authorization: Bearer
-      $CRON_SECRET` — the fleet's `appcron-<app>-<job>` mechanism, a systemd
-      timer on the box calling the route on localhost, with a Telegram alert
-      on failure. The route is written and tested and the registry row exists
-      in fleetcrown-apps `install-app-crons.sh` (03:30 UTC daily). Tick this
-      when `journalctl -u appcron-sbb-fundbuero-purge` shows an `HTTP 200`;
-      until then retention is a column and a good intention, and the
-      deployment accepts real contact details from the public.
+- [x] ~~**Prove the purge timer fires.**~~ Done 2026-09-11. The purge is
+      `lib/server/purge.ts`, reached by `POST /api/cron/purge` with
+      `Authorization: Bearer $CRON_SECRET` — the fleet's `appcron-<app>-<job>`
+      mechanism: a systemd timer on the box calling the route on localhost,
+      Telegram alert on failure (fleetcrown #616, 03:30 UTC daily). Fired
+      once by hand after the deploy of `5ad6b87`:
+      `appcron-sbb-fundbuero-purge.service` → `Result=success`, `HTTP 200`,
+      and the app logged `0 reports, 0 found items, 0 contacts` — nothing was
+      due, which is the correct answer for a database with no reports. From
+      outside, the route answers 401 without the secret and 405 to GET. Check
+      any day with `journalctl -u appcron-sbb-fundbuero-purge -n 3`.
 
 ## Needs one free registration
 
