@@ -236,6 +236,38 @@ const de = {
     'Noch im Zug zu melden sollte die Chance erhöhen, dass ein Gegenstand wiedergefunden wird: Das Fahrzeug erreicht seine Endstation in 10 bis 30 Minuten, die Reinigung folgt 5 bis 15 Minuten später, und ein anderer Fahrgast kann den Gegenstand jederzeit mitnehmen',
   'research.time-window.limit':
     'Aus dem Mechanismus hergeleitet, NICHT gemessen. Keine veröffentlichte Zahl verbindet Meldezeit mit Rückgabequote; die viel wiederholte Behauptung «innerhalb von 30 Minuten melden» hat keine belegbare Quelle. Das Produkt misst die Meldezeit mit, damit sich das eines Tages beantworten lässt statt behaupten.',
+
+  // ── Chrome: footer columns, legal basis, the app shell ─────────────────────
+  'site.footer.product': 'Fundbüro',
+  'site.footer.legal': 'Rechtliches',
+  'site.footer.project': 'Dieses Projekt',
+  'site.footer.legalBasis':
+    'Gegenstände, die auf dem Gelände eines Transportunternehmens gefunden werden, sind dem Personal auszuhändigen (ZGB Art. 720 Abs. 3, SR 210). Das Unternehmen gilt als Finder, darf aber keinen Finderlohn beanspruchen und muss eine bekannte verlierende Person benachrichtigen (VPB Art. 77, SR 745.11).',
+  'site.footer.retention':
+    'Meldungen, Bilder und Kontaktdaten tragen eine Löschfrist als Datenbankspalte, mit geplanter Löschung.',
+  'site.footer.language': 'Sprache',
+
+  'site.app.title': 'Verlust melden',
+  'site.app.lead':
+    'Zwei Minuten, kein Konto. Wenn Sie die Fahrt noch wissen, genügt sie — sonst hilft der Fahrplan weiter.',
+  'site.app.asideTitle': 'Was danach passiert',
+  'site.app.asideBody':
+    'Das Zugpersonal auf dieser Fahrt sieht die Meldung in Echtzeit und kann suchen, bevor der Zug die Wendestelle erreicht. Sie erhalten eine Referenznummer; Ihre Angaben bleiben privat.',
+
+  // ── Free-text report assistant ─────────────────────────────────────────────
+  'assist.title': 'Lieber in eigenen Worten?',
+  'assist.hint':
+    'Beschreiben Sie, was passiert ist — die Angaben unten werden daraus vorausgefüllt. Sie können alles ändern.',
+  'assist.placeholder':
+    'Zum Beispiel: Ich habe heute Morgen um kurz vor acht meinen schwarzen Rucksack im IC 8 von Bern nach Zürich liegen lassen, im Wagen 5.',
+  'assist.action': 'Formular ausfüllen',
+  'assist.working': 'Wird gelesen …',
+  'assist.filled': 'Vorausgefüllt — bitte prüfen Sie die Angaben, bevor Sie fortfahren.',
+  'assist.nothing':
+    'Daraus liess sich nichts Eindeutiges lesen. Bitte füllen Sie das Formular aus.',
+  'assist.unavailable':
+    'Die Textauswertung ist in diesem Build nicht konfiguriert. Das Formular funktioniert unverändert.',
+  'assist.failed': 'Die Textauswertung ist fehlgeschlagen. Bitte füllen Sie das Formular aus.',
 } as const;
 
 /**
@@ -445,6 +477,37 @@ const fr: Record<MessageKey, string> = {
     'Signaler encore à bord devrait augmenter les chances de retrouver un objet : le véhicule atteint son terminus en 10 à 30 minutes, le nettoyage suit 5 à 15 minutes plus tard, et un autre voyageur peut emporter l’objet à tout moment',
   'research.time-window.limit':
     'Déduit du mécanisme, NON mesuré. Aucun chiffre publié ne relie le délai de signalement au taux de restitution ; l’affirmation très répétée « signaler dans les 30 minutes » n’a aucune source traçable. Le produit instrumente le délai de signalement afin qu’on puisse un jour y répondre plutôt que l’affirmer.',
+
+  // ── Chrome ─────────────────────────────────────────────────────────────────
+  'site.footer.product': 'Objets trouvés',
+  'site.footer.legal': 'Informations juridiques',
+  'site.footer.project': 'Ce projet',
+  'site.footer.legalBasis':
+    'Les objets trouvés sur le domaine d’une entreprise de transport doivent être remis au personnel (CC art. 720 al. 3, RS 210). L’entreprise est réputée trouveur, mais ne peut réclamer aucune récompense et doit aviser la personne qui a perdu l’objet si elle est connue (OTV art. 77, RS 745.11).',
+  'site.footer.retention':
+    'Les déclarations, images et coordonnées portent un délai de suppression sous forme de colonne de base de données, avec purge planifiée.',
+  'site.footer.language': 'Langue',
+
+  'site.app.title': 'Signaler une perte',
+  'site.app.lead':
+    'Deux minutes, sans compte. Si vous vous souvenez du trajet, cela suffit ; sinon, l’horaire vous aide.',
+  'site.app.asideTitle': 'Ce qui se passe ensuite',
+  'site.app.asideBody':
+    'Le personnel de bord de ce trajet voit la déclaration en temps réel et peut chercher avant que le train n’atteigne son terminus. Vous recevez un numéro de référence ; vos données restent privées.',
+
+  // ── Free-text report assistant ─────────────────────────────────────────────
+  'assist.title': 'Plutôt avec vos propres mots ?',
+  'assist.hint':
+    'Décrivez ce qui s’est passé — les champs ci-dessous seront préremplis à partir de votre texte. Vous pouvez tout modifier.',
+  'assist.placeholder':
+    'Par exemple : j’ai oublié mon sac à dos noir ce matin peu avant huit heures dans l’IC 8 de Berne à Zurich, voiture 5.',
+  'assist.action': 'Préremplir le formulaire',
+  'assist.working': 'Lecture en cours …',
+  'assist.filled': 'Prérempli — veuillez vérifier les informations avant de continuer.',
+  'assist.nothing': 'Rien d’univoque n’a pu en être tiré. Veuillez remplir le formulaire.',
+  'assist.unavailable':
+    'L’analyse de texte n’est pas configurée dans cette version. Le formulaire fonctionne normalement.',
+  'assist.failed': 'L’analyse de texte a échoué. Veuillez remplir le formulaire.',
 };
 
 const it: Record<MessageKey, string> = {
@@ -647,6 +710,37 @@ const it: Record<MessageKey, string> = {
     'Segnalare ancora a bordo dovrebbe aumentare la probabilità che un oggetto venga ritrovato: il veicolo raggiunge il capolinea in 10-30 minuti, la pulizia segue dopo 5-15 minuti e un altro viaggiatore può portare via l’oggetto in qualsiasi momento',
   'research.time-window.limit':
     'Dedotto dal meccanismo, NON misurato. Nessuna cifra pubblicata collega il tempo di segnalazione al tasso di restituzione; l’affermazione molto ripetuta «segnalare entro 30 minuti» non ha una fonte tracciabile. Il prodotto misura il tempo di segnalazione affinché un giorno si possa rispondere invece di affermare.',
+
+  // ── Chrome ─────────────────────────────────────────────────────────────────
+  'site.footer.product': 'Oggetti smarriti',
+  'site.footer.legal': 'Informazioni legali',
+  'site.footer.project': 'Questo progetto',
+  'site.footer.legalBasis':
+    'Gli oggetti trovati sull’area di un’impresa di trasporto devono essere consegnati al personale (CC art. 720 cpv. 3, RS 210). L’impresa è considerata ritrovatrice, ma non può pretendere alcuna ricompensa e deve avvisare la persona che ha perso l’oggetto, se nota (OTV art. 77, RS 745.11).',
+  'site.footer.retention':
+    'Segnalazioni, immagini e dati di contatto portano un termine di cancellazione come colonna del database, con eliminazione pianificata.',
+  'site.footer.language': 'Lingua',
+
+  'site.app.title': 'Segnala una perdita',
+  'site.app.lead':
+    'Due minuti, senza account. Se ricorda la corsa, basta questo; altrimenti l’orario è di aiuto.',
+  'site.app.asideTitle': 'Che cosa succede dopo',
+  'site.app.asideBody':
+    'Il personale di bordo di questa corsa vede la segnalazione in tempo reale e può cercare prima che il treno raggiunga il capolinea. Riceverà un numero di riferimento; i suoi dati restano privati.',
+
+  // ── Free-text report assistant ─────────────────────────────────────────────
+  'assist.title': 'Preferisce con parole sue?',
+  'assist.hint':
+    'Descriva che cosa è successo — i campi qui sotto verranno precompilati dal suo testo. Può modificare tutto.',
+  'assist.placeholder':
+    'Per esempio: stamattina poco prima delle otto ho dimenticato il mio zaino nero sull’IC 8 da Berna a Zurigo, carrozza 5.',
+  'assist.action': 'Precompila il modulo',
+  'assist.working': 'Lettura in corso …',
+  'assist.filled': 'Precompilato — verifichi i dati prima di continuare.',
+  'assist.nothing': 'Non è stato possibile ricavarne nulla di univoco. Compili il modulo.',
+  'assist.unavailable':
+    'L’analisi del testo non è configurata in questa versione. Il modulo funziona normalmente.',
+  'assist.failed': 'L’analisi del testo non è riuscita. Compili il modulo.',
 };
 
 const en: Record<MessageKey, string> = {
@@ -848,6 +942,37 @@ const en: Record<MessageKey, string> = {
     'Reporting while still aboard should raise the chance an item is recovered, because the vehicle reaches its terminus within 10–30 minutes, turnaround cleaning follows within 5–15, and another passenger may take the item at any point',
   'research.time-window.limit':
     'Reasoned from mechanism, NOT measured. No published figure links time-to-report to recovery rate; the widely repeated “report within 30 minutes” claim has no traceable source. The product instruments time-to-report so this can eventually be answered rather than asserted.',
+
+  // ── Chrome ─────────────────────────────────────────────────────────────────
+  'site.footer.product': 'Lost property',
+  'site.footer.legal': 'Legal',
+  'site.footer.project': 'This project',
+  'site.footer.legalBasis':
+    'Items found on a transport operator’s premises must be handed to staff (Civil Code Art. 720 para. 3, SR 210). The operator counts as the finder but may claim no finder’s reward, and must notify a known loser (Passenger Transport Ordinance Art. 77, SR 745.11).',
+  'site.footer.retention':
+    'Reports, images and contact details carry a deletion deadline as a database column, with a scheduled purge.',
+  'site.footer.language': 'Language',
+
+  'site.app.title': 'Report a loss',
+  'site.app.lead':
+    'Two minutes, no account. If you still know the journey that is enough; if not, the timetable will help.',
+  'site.app.asideTitle': 'What happens next',
+  'site.app.asideBody':
+    'Crew on that journey see the report in real time and can search before the train reaches its turnaround. You get a reference number; your details stay private.',
+
+  // ── Free-text report assistant ─────────────────────────────────────────────
+  'assist.title': 'Rather use your own words?',
+  'assist.hint':
+    'Describe what happened — the fields below will be filled in from your text. You can change anything.',
+  'assist.placeholder':
+    'For example: I left my black rucksack on the IC 8 from Bern to Zurich just before eight this morning, in coach 5.',
+  'assist.action': 'Fill in the form',
+  'assist.working': 'Reading …',
+  'assist.filled': 'Filled in — please check the details before continuing.',
+  'assist.nothing': 'Nothing unambiguous could be read from that. Please fill in the form.',
+  'assist.unavailable':
+    'Text interpretation is not configured in this build. The form works as normal.',
+  'assist.failed': 'Text interpretation failed. Please fill in the form.',
 };
 
 export const CATALOGUES: Record<Locale, Record<MessageKey, string>> = { de, fr, it, en };

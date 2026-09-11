@@ -23,6 +23,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { DescribeFirst } from '@/components/report/DescribeFirst';
 import { useLocale, useT } from '@/lib/i18n/LocaleProvider';
 import {
   REPORT_STEPS,
@@ -68,7 +69,8 @@ export function ReportFlow() {
   const { locale } = useLocale();
 
   const [step, setStep] = useState<ReportStep>('journey');
-  const [draft, setDraft] = useState<ReportDraft>(() => emptyDraft(new Date()));
+  const [startedAt] = useState(() => new Date());
+  const [draft, setDraft] = useState<ReportDraft>(() => emptyDraft(startedAt));
   const [timing, setTiming] = useState<ReportTiming>({ startedAt: null, submittedAt: null });
   const [stations, setStations] = useState<Station[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
@@ -200,10 +202,17 @@ export function ReportFlow() {
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="text-app-xl font-semibold text-app-charcoal mb-1 outline-none"
+        className="step-heading mb-1 text-app-xl font-semibold text-app-charcoal"
       >
         {t(`report.step.${step === 'item' ? 'what' : step === 'place' ? 'where' : step}` as never)}
       </h1>
+
+      {/* First step only. The assistant fills the item, place and time fields,
+          which live in steps two and three — offering it there would mean
+          asking someone to describe what happened AFTER they had already typed
+          it in. Offering it on the last step, over contact details it is
+          forbidden to touch, would be worse. */}
+      {step === 'journey' && <DescribeFirst draft={draft} onApply={update} now={startedAt} />}
 
       {step === 'journey' && (
         <JourneyStep
@@ -224,16 +233,25 @@ export function ReportFlow() {
         </p>
       )}
 
-      {/* The thumb's arc. Fixed to the bottom, full width, 56px tall.
+      {/* The thumb's arc — ON A PHONE. Fixed to the bottom, full width, 56px
+          tall, because the hand holding the device can reach there and nowhere
+          else comfortably.
           NOT .mobile-container inside here: that class carries
           min-height:100dvh, which stretched this fixed bar to the FULL height
           of the viewport and made it swallow every click on the page. The
           element stayed invisible — a white bar behind white content — so it
           looked fine in a screenshot and in the accessibility tree, and only
           showed up as "subtree intercepts pointer events" when something
-          actually tried to tap a suggestion. */}
-      <div className="fixed inset-x-0 bottom-0 bg-app-white border-t border-app-cloud p-4 safe-bottom">
-        <div className="mx-auto flex max-w-[430px] gap-3">
+          actually tried to tap a suggestion.
+
+          From `md` up it stops being fixed. A bar welded across the bottom of
+          a 1440px window is a phone habit transplanted onto a desktop: it
+          covers page content, it sits a mouse-journey away from the field the
+          person just filled in, and it has no thumb to be near. On a wide
+          viewport the action belongs directly under the form, in the reading
+          order, where the cursor already is. */}
+      <div className="safe-bottom fixed inset-x-0 bottom-0 border-t border-app-cloud bg-app-white p-4 md:static md:mt-app-xl md:border-0 md:p-0">
+        <div className="mx-auto flex max-w-[430px] gap-3 md:max-w-none">
           {index > 0 && (
             <button
               type="button"

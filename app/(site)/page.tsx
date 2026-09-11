@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { headers } from 'next/headers';
 
-import { localeFromAcceptLanguage, translator } from '@/lib/i18n';
+import { translator } from '@/lib/i18n';
+import { resolveLocale } from '@/lib/i18n/server';
 import { EVIDENCE_BY_ID } from '@/lib/research';
 
 /**
@@ -21,7 +21,7 @@ import { EVIDENCE_BY_ID } from '@/lib/research';
  *   4. here is the channel.
  */
 export default async function Page() {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
   const t = translator(locale);
 
   const gap = EVIDENCE_BY_ID['reports-vs-finds'];

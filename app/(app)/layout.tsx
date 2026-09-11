@@ -1,43 +1,40 @@
-import Link from 'next/link';
-import { headers } from 'next/headers';
-
+import { SiteFooter } from '@/components/site/SiteFooter';
+import { SiteHeader } from '@/components/site/SiteHeader';
 import { ConceptNotice } from '@/components/ui/ConceptNotice';
-import { localeFromAcceptLanguage, translator } from '@/lib/i18n';
+import { resolveLocale } from '@/lib/i18n/server';
+import { tenant } from '@/lib/tenant';
 
 /**
- * The phone.
+ * The passenger app, inside the site.
  *
- * Everything in this group — the passenger report flow and the crew board — is
- * designed for one hand on a moving train, so it keeps the 430px frame. The
- * website around it is a different surface for a different reader and lives in
- * `(site)`.
+ * It used to render in a 430px `.mobile-container` at every width — a phone
+ * frame with a drop shadow, floating in the middle of a laptop window, with a
+ * white action bar welded across the bottom of the viewport. On a phone that
+ * is exactly right. On a desktop it is a phone screenshot pretending to be a
+ * web page, and it tells a visitor who just arrived from the landing page that
+ * the product is a mock-up.
  *
- * The one link back out matters more than it looks: a person who arrives at
- * `/app` from a shared link has no other route to the explanation of what they
- * are looking at, and an unexplained pitch build carrying an operator's mark is
- * the failure mode `ConceptNotice` exists to prevent.
+ * So the app wears the site's own header and footer now, and the flow becomes
+ * a form on a page above `md` (see `.app-canvas` and the action bar in
+ * ReportFlow). Below `md` nothing changes: same 430px column, same thumb-arc
+ * bar, because that is the situation the flow was designed for and still the
+ * situation most reports will be filed in.
  *
- * It sits at the TOP, above `<main>`, because the report flow ends in a sticky
- * action bar. Placed after the flow it rendered in the gap between the form and
- * that bar — reading as a stray link inside the form rather than as a way out
- * of it.
+ * The crew board is NOT here — it moved to `(crew)`, which keeps the phone
+ * frame and none of this chrome. Crew walking through a carriage do not need a
+ * language switcher and a legal footer.
  */
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
-  const t = translator(locale);
+  const locale = await resolveLocale();
 
   return (
-    <div className="mobile-container">
+    <div className="site-shell">
       <ConceptNotice />
-      <p className="border-b border-app-cloud px-app-md py-app-sm text-app-xs text-app-granite">
-        <Link href="/" className="hover:text-app-charcoal">
-          {/* aria-hidden: the arrow is decoration, and a screen reader
-              announcing "left arrow Start" is worse than "Start". */}
-          <span aria-hidden="true">← </span>
-          {t('site.nav.home')}
-        </Link>
-      </p>
-      <main id="main">{children}</main>
+      <SiteHeader wordmark={tenant.wordmark} locale={locale} />
+      <main id="main" className="flex-1">
+        {children}
+      </main>
+      <SiteFooter locale={locale} />
     </div>
   );
 }

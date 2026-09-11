@@ -1,9 +1,8 @@
-import { headers } from 'next/headers';
-
 import { SiteFooter } from '@/components/site/SiteFooter';
 import { SiteHeader } from '@/components/site/SiteHeader';
-import { localeFromAcceptLanguage } from '@/lib/i18n';
+
 import { tenant } from '@/lib/tenant';
+import { resolveLocale } from '@/lib/i18n/server';
 
 /**
  * The website.
@@ -13,7 +12,7 @@ import { tenant } from '@/lib/tenant';
  * except the tokens, which is the point — one palette, two surfaces.
  */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const locale = localeFromAcceptLanguage((await headers()).get('accept-language'));
+  const locale = await resolveLocale();
 
   return (
     <div className="site-shell">
@@ -21,7 +20,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           reading NEXT_PUBLIC_TENANT gets the value inlined at BUILD time,
           which is a different answer from the server's runtime read — see
           the note in SiteHeader. */}
-      <SiteHeader wordmark={tenant.wordmark} />
+      <SiteHeader wordmark={tenant.wordmark} locale={locale} />
       <main id="main" className="flex-1">
         {children}
       </main>

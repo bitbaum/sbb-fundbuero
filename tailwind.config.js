@@ -92,14 +92,26 @@ module.exports = {
         'app-button': 'var(--app-shadow-button)',
       },
       fontSize: {
-        // SBB typography scale
-        'app-xs': ['12px', { lineHeight: '16px' }],
-        'app-sm': ['14px', { lineHeight: '20px' }],
-        'app-base': ['16px', { lineHeight: '24px' }],
-        'app-lg': ['18px', { lineHeight: '28px' }],
-        'app-xl': ['20px', { lineHeight: '28px' }],
-        'app-2xl': ['24px', { lineHeight: '32px' }],
-        'app-3xl': ['32px', { lineHeight: '40px' }],
+        // SBB's scale (Lyne `sbb-typo-scale-*`), with SBB's two line-height /
+        // letter-spacing pairs baked in rather than left to the cascade — a
+        // Tailwind fontSize utility emits its own line-height and would
+        // otherwise silently override the body metrics.
+        //
+        // The split at 20px is ours, not SBB's: Lyne publishes the two pairs
+        // but not which sizes take which. Everything that is body copy in this
+        // app is 18px or smaller, and everything larger is a heading.
+        'app-xs': ['12px', { lineHeight: '1.75', letterSpacing: '0.03em' }],
+        'app-2xs': ['13px', { lineHeight: '1.75', letterSpacing: '0.03em' }],
+        'app-sm': ['14px', { lineHeight: '1.75', letterSpacing: '0.03em' }],
+        'app-base': ['16px', { lineHeight: '1.75', letterSpacing: '0.03em' }],
+        'app-lg': ['18px', { lineHeight: '1.75', letterSpacing: '0.03em' }],
+        'app-xl': ['20px', { lineHeight: '1.4', letterSpacing: '0em' }],
+        'app-2xl': ['24px', { lineHeight: '1.4', letterSpacing: '0em' }],
+        'app-3xl': ['32px', { lineHeight: '1.4', letterSpacing: '0em' }],
+        'app-4xl': ['40px', { lineHeight: '1.4', letterSpacing: '0em' }],
+        'app-5xl': ['48px', { lineHeight: '1.4', letterSpacing: '0em' }],
+        'app-6xl': ['56px', { lineHeight: '1.4', letterSpacing: '0em' }],
+        'app-7xl': ['64px', { lineHeight: '1.4', letterSpacing: '0em' }],
       },
     },
   },
