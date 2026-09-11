@@ -35,7 +35,22 @@ export function GET(request: Request) {
   // see isSafeNextPath. Anything that fails the check goes to the root.
   const destination = isSafeNextPath(next) ? next : '/';
 
-  const response = NextResponse.redirect(new URL(destination, url.origin), 303);
+  // RELATIVE Location, and this is not a style choice.
+  //
+  // `NextResponse.redirect` demands an absolute URL, and the only origin this
+  // process knows is its own: behind the reverse proxy the app is bound to
+  // 127.0.0.1:4016, so `url.origin` is `https://localhost:4016` and every
+  // language switch sent the visitor to a port on their own machine. It looked
+  // perfect in local testing, where the origin happens to be the real one.
+  //
+  // Trusting `x-forwarded-host` instead would work and would also mean echoing
+  // an attacker-suppliable header into a Location. RFC 7231 has allowed a
+  // relative reference in Location since 2014 and every browser resolves it
+  // against the requested URL — which is the public one, by definition.
+  const response = new NextResponse(null, {
+    status: 303,
+    headers: { Location: destination },
+  });
 
   response.cookies.set(LOCALE_COOKIE, locale, {
     path: '/',
