@@ -28,6 +28,7 @@ import { useLocale, useT } from '@/lib/i18n/LocaleProvider';
 import {
   REPORT_STEPS,
   canAdvance,
+  describeOffset,
   elapsedSeconds,
   emptyDraft,
   finishTiming,
@@ -54,7 +55,7 @@ interface Suggestion {
   line: string | null;
   calledAt: string;
   offsetMinutes: number;
-  reason: string;
+  actual?: boolean;
 }
 
 type Submission =
@@ -199,13 +200,17 @@ export function ReportFlow() {
         ))}
       </ol>
 
-      <h1
+      {/* h2, not h1: the page supplies the h1. This is the current step —
+          a section within it. It still takes focus so a screen reader
+          announces each step change; `.step-heading` suppresses the ring,
+          because the person pressed "Weiter" rather than navigating here. */}
+      <h2
         ref={headingRef}
         tabIndex={-1}
         className="step-heading mb-1 text-app-xl font-semibold text-app-charcoal"
       >
         {t(`report.step.${step === 'item' ? 'what' : step === 'place' ? 'where' : step}` as never)}
-      </h1>
+      </h2>
 
       {/* First step only. The assistant fills the item, place and time fields,
           which live in steps two and three — offering it there would mean
@@ -427,12 +432,17 @@ function JourneyStep({
                       : 'border-app-cloud bg-app-white'
                   }`}
                 >
-                  <span className="text-app-base font-semibold text-app-charcoal">
+                  <span className="block text-app-base font-semibold text-app-charcoal">
                     {s.trainNumber ?? s.line ?? '—'}
                   </span>
                   {/* The ranking is shown, not hidden: someone choosing
-                      between two trains deserves to know why one is first. */}
-                  <span className="block text-app-sm text-app-granite">{s.reason}</span>
+                      between two trains deserves to know why one is first.
+                      Composed here rather than sent as prose — see the note in
+                      lib/domain/trip-suggestion.ts. */}
+                  <span className="block text-app-sm text-app-granite">
+                    {describeOffset(s.offsetMinutes, t)} (
+                    {t(s.actual ? 'trip.source.actual' : 'trip.source.timetable')})
+                  </span>
                 </button>
               </li>
             ))}
@@ -444,7 +454,7 @@ function JourneyStep({
             onClick={() => onChange({ journeyUnknown: true, journeyId: null })}
             className="mt-3 w-full text-left p-4 min-h-[56px] rounded-app-md border border-app-cloud bg-app-white text-app-base text-app-granite"
           >
-            {t('trip.suggest.tooMany')}
+            {t('trip.suggest.unknown')}
           </button>
         </div>
       )}

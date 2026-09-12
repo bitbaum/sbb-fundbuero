@@ -43,11 +43,21 @@ export default async function Page() {
     <div className="site-width py-0 md:py-app-2xl">
       <div className="grid gap-app-2xl lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div>
-          <header className="hidden md:block">
-            <h1 className="text-app-3xl font-bold text-app-charcoal md:text-app-4xl">
+          {/* The h1 is in the DOM at EVERY width, but only painted from `md`.
+              It was `hidden md:block`, which gave the page two h1s on a
+              desktop (this one and the flow's step heading) and none at all on
+              a phone — a document outline that was wrong in both directions.
+
+              `sr-only` keeps it announced for a screen reader on a phone,
+              where the visual design deliberately drops straight into the
+              first question to keep each step one screenful. The step heading
+              below it is an h2 now, which is what it always was semantically:
+              a section within this page, not the page's title. */}
+          <header>
+            <h1 className="sr-only md:not-sr-only md:text-app-4xl md:font-bold md:text-app-charcoal">
               {t('site.app.title')}
             </h1>
-            <p className="site-measure mt-app-md text-app-base text-app-granite">
+            <p className="site-measure mt-app-md hidden text-app-base text-app-granite md:block">
               {t('site.app.lead')}
             </p>
           </header>

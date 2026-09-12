@@ -37,8 +37,25 @@ export interface RankedJourney extends CandidateJourney {
   offsetMinutes: number;
   /** Lower is better. Exposed so the ordering is inspectable, not magic. */
   distance: number;
-  reason: string;
 }
+
+/*
+ * There is deliberately NO `reason: string` here any more.
+ *
+ * It used to hold a rendered English sentence — "3 min before the stated time
+ * (timetable)" — built on the server and displayed verbatim. Two things wrong
+ * with that, and the second is the serious one:
+ *
+ *   - it broke the repository's own rule that no display string lives outside
+ *     a catalogue, in the one place a passenger cannot avoid reading;
+ *   - a French speaker choosing between two trains, at the most important
+ *     step of the flow, read the deciding information in English.
+ *
+ * Everything the sentence conveyed is already here as data: `offsetMinutes`
+ * carries the sign and the size, `actual` carries the source. The client
+ * composes them in the reader's language from `trip.offset.*` and
+ * `trip.source.*`. Structure over the wire, language at the edge.
+ */
 
 export interface SuggestionOptions {
   /**
@@ -91,7 +108,6 @@ export function rankCandidates(
       ...c,
       offsetMinutes,
       distance,
-      reason: describe(offsetMinutes, c.actual === true),
     });
   }
 
@@ -105,14 +121,6 @@ export function rankCandidates(
   );
 
   return ranked.slice(0, limit);
-}
-
-function describe(offsetMinutes: number, actual: boolean): string {
-  const source = actual ? 'actual' : 'timetable';
-
-  if (offsetMinutes === 0) return `at the stated time (${source})`;
-  if (offsetMinutes < 0) return `${Math.abs(offsetMinutes)} min before the stated time (${source})`;
-  return `${offsetMinutes} min after the stated time (${source})`;
 }
 
 /**

@@ -17,5 +17,16 @@ export default function manifest(): MetadataRoute.Manifest {
     display: 'standalone',
     background_color: '#FFFFFF',
     theme_color: tenant.themeColor,
+    // Without this an install to a home screen gets a blank square. It points
+    // at the same generated route as the tab icon (app/icon.tsx), so there is
+    // one icon, tenant-coloured, and no committed image file sitting outside
+    // the tenant SSOT.
+    icons: [
+      {
+        src: '/icon',
+        sizes: '32x32',
+        type: 'image/png',
+      },
+    ],
   };
 }
