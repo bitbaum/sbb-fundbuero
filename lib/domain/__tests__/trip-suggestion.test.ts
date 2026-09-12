@@ -53,7 +53,11 @@ describe('ranking', () => {
     );
 
     expect(ranked[0].trainNumber).toBe('REAL');
-    expect(ranked[0].reason).toMatch(/actual/);
+    // `actual` is the FACT the client turns into words. It used to be checked
+    // through a rendered English sentence, which is how an untranslated string
+    // stayed in the flow for as long as it did — the test asserted the prose
+    // was right rather than that the data was.
+    expect(ranked[0].actual).toBe(true);
   });
 
   it('drops anything outside the window', () => {
@@ -80,11 +84,13 @@ describe('ranking', () => {
     expect(ranked).toHaveLength(1);
   });
 
-  it('reports a signed offset and a human reason for each suggestion', () => {
+  it('reports a signed offset for each suggestion', () => {
     const [r] = rankCandidates([candidate({ calledAt: '2026-09-08T14:20:00Z' })], STATED);
 
+    // Negative means earlier. The sign is the whole message: the client turns
+    // it into "10 min vorher" / "10 min avant" / "10 min prima" / "10 min
+    // before" without this module knowing which language it is.
     expect(r.offsetMinutes).toBe(-10);
-    expect(r.reason).toMatch(/10 min before/);
   });
 
   it('is stable: the same input twice gives the same order', () => {

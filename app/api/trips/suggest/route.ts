@@ -130,8 +130,11 @@ export async function GET(request: Request) {
           calledAt: r.calledAt,
           offsetMinutes: r.offsetMinutes,
           // The ranking is shown, not hidden. A passenger choosing between two
-          // trains deserves to know why one is listed first.
-          reason: r.reason,
+          // trains deserves to know why one is listed first — but the SENTENCE
+          // that says so is composed on the client, in the reader's language.
+          // This used to ship a rendered English string, which is the one piece
+          // of text a French reader could not avoid meeting in English.
+          actual: r.actual === true,
         })),
       },
     });

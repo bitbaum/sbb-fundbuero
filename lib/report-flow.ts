@@ -1,3 +1,5 @@
+import type { MessageKey } from './i18n/messages';
+
 /**
  * The reporting flow's state, and the clock on it.
  *
@@ -157,4 +159,23 @@ export function finishTiming(timing: ReportTiming, now: number): ReportTiming {
 export function elapsedSeconds(timing: ReportTiming): number | null {
   if (timing.startedAt === null || timing.submittedAt === null) return null;
   return Math.round((timing.submittedAt - timing.startedAt) / 1000);
+}
+
+/**
+ * "3 min vorher", "at the stated time", "5 min après".
+ *
+ * Here rather than in the component because it is a pure function of a signed
+ * integer and a translator, and because the thing it replaced — a rendered
+ * English sentence built on the server — went unnoticed for so long precisely
+ * because no test could see it.
+ *
+ * Composition, not interpolation: the preposition follows the number in all
+ * four languages, so the word order is right without an ICU layer. `min` is an
+ * abbreviation in all four and does not pluralise, which is the other thing
+ * that would have forced one.
+ */
+export function describeOffset(offsetMinutes: number, t: (key: MessageKey) => string): string {
+  if (offsetMinutes === 0) return t('trip.offset.at');
+  const direction = offsetMinutes < 0 ? 'trip.offset.before' : 'trip.offset.after';
+  return `${Math.abs(offsetMinutes)} min ${t(direction)}`;
 }

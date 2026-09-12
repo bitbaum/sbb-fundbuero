@@ -268,6 +268,15 @@ const de = {
   'assist.unavailable':
     'Die Textauswertung ist in diesem Build nicht konfiguriert. Das Formular funktioniert unverändert.',
   'assist.failed': 'Die Textauswertung ist fehlgeschlagen. Bitte füllen Sie das Formular aus.',
+
+  // Why a suggested journey is ranked where it is. Composed client-side:
+  // "<n> min" + one of these, then the source in brackets.
+  'trip.offset.at': 'zur angegebenen Zeit',
+  'trip.offset.before': 'vorher',
+  'trip.offset.after': 'später',
+  'trip.source.actual': 'Echtzeit',
+  'trip.source.timetable': 'Fahrplan',
+  'trip.suggest.unknown': 'Ich weiss nicht, welcher Zug es war',
 } as const;
 
 /**
@@ -508,6 +517,13 @@ const fr: Record<MessageKey, string> = {
   'assist.unavailable':
     'L’analyse de texte n’est pas configurée dans cette version. Le formulaire fonctionne normalement.',
   'assist.failed': 'L’analyse de texte a échoué. Veuillez remplir le formulaire.',
+
+  'trip.offset.at': 'à l’heure indiquée',
+  'trip.offset.before': 'avant',
+  'trip.offset.after': 'après',
+  'trip.source.actual': 'temps réel',
+  'trip.source.timetable': 'horaire',
+  'trip.suggest.unknown': 'Je ne sais pas de quel train il s’agissait',
 };
 
 const it: Record<MessageKey, string> = {
@@ -741,6 +757,13 @@ const it: Record<MessageKey, string> = {
   'assist.unavailable':
     'L’analisi del testo non è configurata in questa versione. Il modulo funziona normalmente.',
   'assist.failed': 'L’analisi del testo non è riuscita. Compili il modulo.',
+
+  'trip.offset.at': 'all’ora indicata',
+  'trip.offset.before': 'prima',
+  'trip.offset.after': 'dopo',
+  'trip.source.actual': 'tempo reale',
+  'trip.source.timetable': 'orario',
+  'trip.suggest.unknown': 'Non so quale treno fosse',
 };
 
 const en: Record<MessageKey, string> = {
@@ -973,6 +996,13 @@ const en: Record<MessageKey, string> = {
   'assist.unavailable':
     'Text interpretation is not configured in this build. The form works as normal.',
   'assist.failed': 'Text interpretation failed. Please fill in the form.',
+
+  'trip.offset.at': 'at the stated time',
+  'trip.offset.before': 'before',
+  'trip.offset.after': 'after',
+  'trip.source.actual': 'actual',
+  'trip.source.timetable': 'timetable',
+  'trip.suggest.unknown': 'I don’t know which train it was',
 };
 
 export const CATALOGUES: Record<Locale, Record<MessageKey, string>> = { de, fr, it, en };
