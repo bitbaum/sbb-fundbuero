@@ -48,5 +48,14 @@ temp/
 # Scratch written by browser-driving agents (Playwright MCP).
 .playwright-mcp/
 
+# Screenshots an agent drops in the repo root while checking a page.
+# `.playwright-mcp/` above only covers the tool's own directory; a screenshot
+# saved to an explicit filename lands here, and `git add -A` then sweeps it
+# into the commit. One (flow-step1.png) already reached master that way.
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+
 # TypeScript incremental build info
 *.tsbuildinfo
