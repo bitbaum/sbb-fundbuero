@@ -345,7 +345,7 @@ One thing about it is honest rather than finished, and one was finished on
   the last of those days the station suggestions go empty. A nightly import
   would fix that; see `TODO.md`.
 - The **purge** runs daily at 03:30 UTC as `POST /api/cron/purge`, called by
-  a systemd timer on the box with a bearer secret (fleetcrown's `appcron-*`
+  a systemd timer on the box with a bearer secret (loki's `appcron-*`
   mechanism, Telegram alert on failure). It was fired once by hand after the
   deploy and answered `HTTP 200`; `TODO.md` records the run. So the retention
   column is now enforced, not intended.

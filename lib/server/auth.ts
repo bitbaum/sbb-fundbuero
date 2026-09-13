@@ -98,7 +98,7 @@ function presentedToken(request: Request, allowQuery: boolean): string | null {
  *
  * The box runs each app's crons as systemd timers that call a route on
  * localhost with `Authorization: Bearer $CRON_SECRET`, the secret read from
- * the app's env at fire time (fleetcrown `install-app-crons.sh`). This is the
+ * the app's env at fire time (loki `install-app-crons.sh`). This is the
  * receiving side of that contract, and it is the SAME shape as staff access:
  * fails closed on a missing or short secret, constant-time on the compare.
  *
