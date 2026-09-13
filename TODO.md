@@ -110,7 +110,7 @@ Nothing here is optional before this is described to anyone as working.
       `lib/server/purge.ts`, reached by `POST /api/cron/purge` with
       `Authorization: Bearer $CRON_SECRET` — the fleet's `appcron-<app>-<job>`
       mechanism: a systemd timer on the box calling the route on localhost,
-      Telegram alert on failure (fleetcrown #616, 03:30 UTC daily). Fired
+      Telegram alert on failure (loki #616, 03:30 UTC daily). Fired
       once by hand after the deploy of `5ad6b87`:
       `appcron-sbb-fundbuero-purge.service` → `Result=success`, `HTTP 200`,
       and the app logged `0 reports, 0 found items, 0 contacts` — nothing was
