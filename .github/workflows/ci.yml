@@ -14,7 +14,7 @@ on:
 
 jobs:
   verify:
-    name: Verify (format + lint + typecheck + test + tenant SSOT)
+    name: Verify (format + lint + typecheck + test + tenant SSOT) + build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -32,5 +32,29 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Next keeps its compiler output in .next/cache. Without restoring it the
+      # build below is COLD on every run and the deploy (which restores the
+      # same cache under bitbaum/loki's selfhost-deploy.yml) starts from
+      # whatever the last deploy left, never from what CI just compiled.
+      # Keyed on the lockfile so a dependency change invalidates it; the bare
+      # restore-key is last on purpose: a stale cache still beats no cache, and
+      # Next validates its own entries. (fleet/templates/ci/ci-pnpm.yml)
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nextjs-${{ runner.os }}-
+
       - name: Verify
         run: pnpm run verify
+
+      - name: Build
+        # Hermetic compile: proves the shipped artifact builds before the deploy
+        # tries to. The placeholder URL covers tools that read the var without
+        # connecting; no real secret is needed to compile.
+        env:
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+        run: pnpm run build
