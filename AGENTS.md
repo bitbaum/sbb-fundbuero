@@ -163,18 +163,13 @@ stops being true — at which point a broker earns its place, and not before.
 
 ### The fallback that could not fail
 
-`useApiWithFallback` catches any API error **and any `success: false`** and
-substitutes `lib/mock-data.ts`, setting `error` to `null` on that path. The UI
-therefore has no way to render "backend down" — it renders a complete,
-persuasive product with no backend at all.
-
-`config.demo.enabled` is now honest about this: demo mode is on whenever no
-backend is configured, so running on fixtures is a declared state rather than a
-fallback reached by letting a request fail first. It previously read
-`process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || true`, which is `true` for
-every possible value of the variable.
-
-**When the real backend lands, this hook must surface failure, not hide it.**
+The earlier frontend's `useApiWithFallback` caught any API error **and any
+`success: false`** and substituted fixtures with `error` set to `null`, so a
+total backend outage rendered as a complete, persuasive product. The hook and
+`lib/mock-data.ts` were removed in the rebuild (#63). The rule it leaves
+behind: a failed request is shown as failed (a report shows its error or is
+queued with the passenger told so; the staff board marks the connection down),
+never quietly replaced with something that looks like data.
 
 ### No localhost fallback for API URLs
 
@@ -253,10 +248,9 @@ badge a passenger sees while still hoping.
 
 ## Four languages
 
-de, fr, it, en. Switzerland is quadrilingual and the schema already anticipates
-it. `lib/labels.ts` is the SSOT for UI text but currently holds one
-locale — it is a single-language SSOT, not i18n. No hardcoded strings in
-components either way.
+de, fr, it, en. Switzerland is quadrilingual. `lib/i18n/messages.ts` is the
+SSOT for UI text, one catalogue per locale, typed so a key missing from any
+locale fails `tsc`. No hardcoded strings in components.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
