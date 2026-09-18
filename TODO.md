@@ -4,7 +4,7 @@ Split by what the item actually blocks. A thing is a **launch blocker** only if
 shipping without it would mislead a user or lose their data — not because it
 would be nice.
 
-Verified against the tree on 2026-09-08. Anything not written down here is not
+Verified against the tree on 2026-09-18. Anything not written down here is not
 tracked; there is no second list.
 
 ---
@@ -27,10 +27,10 @@ Nothing here is optional before this is described to anyone as working.
 - [ ] **Photo upload is declared but impossible.** `images` validates as
       `Joi.array().items(Joi.string().uri())` — URLs the client must already
       host. There is no upload route, no storage, no presign, nothing.
-- [ ] **The UI cannot report that the backend is down.**
-      `useApiWithFallback` sets `error: null` on the fallback path, so a total
-      backend outage renders as a complete, working product on fixtures.
-      Fixtures must be visibly fixtures.
+- [x] ~~**The UI cannot report that the backend is down.**~~ Gone with the
+      rebuild (#63): `useApiWithFallback` and `lib/mock-data.ts` no longer
+      exist. A failed report shows its error, an unreachable one is queued and
+      the passenger is told so, and the staff board marks the connection down.
 - [x] ~~**No migrations.**~~ Done: Drizzle migrations in `db/migrations`,
       applied by `pnpm run db:setup` along with `db/rls.sql`. The container's
       init hook is no longer used — it runs once on an empty volume and never
@@ -41,20 +41,18 @@ Nothing here is optional before this is described to anyone as working.
       its identifiers cascade, and nothing not yet due is touched. The box's
       timer reaches it through `POST /api/cron/purge`; see "Keeping the live
       deployment fed".
-- [ ] **One language.** `lib/labels.ts` is a single-locale SSOT, not i18n. de,
-      fr, it, en are all required.
-- [ ] **No `LICENSE` file**, while `README.md` carries an MIT badge. Either add
-      the file or drop the badge; a badge for a licence that is not in the repo
-      grants nothing.
+- [x] ~~**One language.**~~ Done: `lib/i18n/messages.ts` carries de, fr, it
+      and en, typed `Record<Locale, Record<MessageKey, string>>`, so a key
+      missing from any locale fails `tsc`.
+- [x] ~~**No `LICENSE` file.**~~ Done: MIT, added in #82.
 
 ---
 
 ## Security
 
-- [ ] **Hardcoded JWT fallback secret.** `services/reporting/src/middleware/
-      auth.ts:44` reads `process.env.JWT_SECRET || 'your-secret-key'`. A
-      deployment that forgets to set the variable accepts tokens anyone can
-      forge. Fail closed: throw on startup instead.
+- [x] ~~**Hardcoded JWT fallback secret.**~~ Gone: `services/` was deleted in
+      the rebuild (#63), and nothing in the app reads `JWT_SECRET`. Staff
+      routes fail closed on `STAFF_ACCESS_TOKEN` instead (`lib/server/auth.ts`).
 - [x] ~~**No row-level security.**~~ Done in `db/rls.sql`, and proved against a
       real Postgres rather than asserted. Note the deviation from the brief:
       `anon` and `authenticated` are Supabase roles and this runs on plain
@@ -103,9 +101,13 @@ Nothing here is optional before this is described to anyone as working.
 
 - [ ] **The timetable import needs a nightly cron.** Journeys are imported per
       OPERATING DATE, so the station suggestions go empty once the imported
-      days run out. The box currently holds two operating days (2026-09-11 and
-      2026-09-12) for ten stations, loaded by hand. Until a schedule refills
-      it, the live demo has an expiry date rather than a bug.
+      days run out. The box holds two operating days (2026-09-11 and
+      2026-09-12) for ten stations, loaded by hand, and **that date has
+      passed**: on 2026-09-18 the live `/api/trips/suggest` for Bern returned
+      journeys at 2026-09-12T06:00Z and `usable: false` with no suggestions
+      at 2026-09-18T06:00Z. The flow still works, because it falls back to
+      asking for the train, but the step that is the product's point shows
+      nothing. Needs a human refill on the box until the cron exists.
 - [x] ~~**Prove the purge timer fires.**~~ Done 2026-09-11. The purge is
       `lib/server/purge.ts`, reached by `POST /api/cron/purge` with
       `Authorization: Bearer $CRON_SECRET` — the fleet's `appcron-<app>-<job>`
