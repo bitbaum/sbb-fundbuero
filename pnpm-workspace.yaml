@@ -17,3 +17,6 @@ allowBuilds:
   # drizzle-kit bundles with esbuild; its postinstall fetches the platform binary.
   esbuild: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - '@bitbaum/ai-kit@1.11.0'
