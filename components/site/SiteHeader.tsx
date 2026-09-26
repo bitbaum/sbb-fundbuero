@@ -71,7 +71,7 @@ export function SiteHeader({ wordmark, locale }: { wordmark: string; locale: Loc
           kind of site uses: wordmark, sections, then languages and the action
           pushed right. One instance of each child, so a screen reader does not
           meet the same nav landmark twice. */}
-      <div className="site-width flex flex-wrap items-center gap-x-app-lg gap-y-app-sm py-app-sm md:h-[72px] md:flex-nowrap md:py-0">
+      <div className="site-width flex flex-wrap items-center gap-x-app-lg gap-y-0 py-app-sm md:h-[72px] md:flex-nowrap md:py-0">
         <Link href="/" className="order-1 flex shrink-0 items-baseline gap-2">
           {/* The wordmark is the tenant's, never a literal. */}
           <span className="text-app-xl font-bold tracking-tight text-brand">{wordmark}</span>
