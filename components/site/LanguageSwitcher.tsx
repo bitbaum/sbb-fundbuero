@@ -53,8 +53,8 @@ export function LanguageSwitcher({
                 aria-current={active ? 'true' : undefined}
                 className={
                   active
-                    ? 'rounded-app-sm px-2 py-1 font-semibold text-app-charcoal underline underline-offset-4'
-                    : 'rounded-app-sm px-2 py-1 text-app-granite hover:bg-app-milk hover:text-app-charcoal'
+                    ? 'inline-flex min-h-11 items-center rounded-app-sm px-2 font-semibold text-app-charcoal underline underline-offset-4'
+                    : 'inline-flex min-h-11 items-center rounded-app-sm px-2 text-app-granite hover:bg-app-milk hover:text-app-charcoal'
                 }
               >
                 {/* Endonym in full: "Français", not "FR". A two-letter code is

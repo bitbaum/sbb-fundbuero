@@ -494,9 +494,13 @@ body {
 
 /* Nav links: the underline grows from the token, so a tenant swap moves it
    too. `currentColor` would tie it to the text colour and lose the brand. */
+/* 44px tall (fleet nav contract rule 3): the hit area is the box, not the
+   text, so the height comes from min-height rather than a bigger font. */
 .site-navlink {
   position: relative;
-  padding-block: var(--app-space-xs);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--app-granite);
   transition: color 0.15s ease;
 }
