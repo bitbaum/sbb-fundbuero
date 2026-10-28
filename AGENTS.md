@@ -33,8 +33,8 @@ into this file.
 Org rules are [bitbaum/fleet AGENTS.md](https://github.com/bitbaum/fleet/blob/main/AGENTS.md): packages by default (say why if you skip one), search through `@bitbaum/searchkit`, chat through `@bitbaum/chatkit`, shared names and the identity contract. Read that file. Do not restate it here.
 
 
-Working guide for this repository. `CLAUDE.md` is a symlink to this file; there
-is one copy, not three.
+Working guide for this repository. `CLAUDE.md` is a two-line pointer to this file;
+there is one copy, not three.
 
 This file records **decisions that are load-bearing** — the ones where doing the
 obvious thing instead would quietly break something — and a **must-not-do list**.
