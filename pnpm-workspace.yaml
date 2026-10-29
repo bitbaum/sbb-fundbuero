@@ -19,4 +19,4 @@ allowBuilds:
   unrs-resolver: true
 
 minimumReleaseAgeExclude:
-  - '@bitbaum/ai-kit@1.11.0'
+  - '@bitbaum/ai-kit@1.11.0 || 1.21.5'
