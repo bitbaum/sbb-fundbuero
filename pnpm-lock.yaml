@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@bitbaum/ai-kit':
-        specifier: ^1.21.4
-        version: 1.21.4(react@19.2.8)
+        specifier: ^1.21.5
+        version: 1.21.5(react@19.2.8)
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(postgres@3.4.9)
@@ -250,8 +250,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bitbaum/ai-kit@1.21.4':
-    resolution: {integrity: sha512-aBK/yh5X74ZPTCURwEznXT5kKbe1GuCc0RUHy+e9v0uVivDERAq67E1LmUpasDZ3G81DB0OdOuIWMjJ+IF6ihA==}
+  '@bitbaum/ai-kit@1.21.5':
+    resolution: {integrity: sha512-TdiPrUdzSnQWDG7XE/iUA+BozJg2+xJMYHb/6ZRtbW4692n1so+jBfb5PGHyxjwiWApbnPg9TUHKv04p87vzvQ==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -3663,7 +3663,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bitbaum/ai-kit@1.21.4(react@19.2.8)':
+  '@bitbaum/ai-kit@1.21.5(react@19.2.8)':
     dependencies:
       '@mozilla/readability': 0.6.0
       ai-forms: 0.1.3(react@19.2.8)
