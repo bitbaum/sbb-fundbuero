@@ -18,15 +18,13 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#FFFFFF',
     theme_color: tenant.themeColor,
     // Without this an install to a home screen gets a blank square. It points
-    // at the same generated route as the tab icon (app/icon.tsx), so there is
+    // at the same generated route as the tab icon (app/icon.tsx, at 192 and 512
+    // — Android will not install from a 32px icon), so there is
     // one icon, tenant-coloured, and no committed image file sitting outside
     // the tenant SSOT.
     icons: [
-      {
-        src: '/icon',
-        sizes: '32x32',
-        type: 'image/png',
-      },
+      { src: '/icon/192', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icon/512', sizes: '512x512', type: 'image/png', purpose: 'any' },
     ],
   };
 }
