@@ -27,11 +27,26 @@ import { tenant } from '@/lib/tenant';
  * takes care to avoid. A single letter in the right colour is recognisable at
  * 32px without pretending to be the operator's mark.
  */
-export const runtime = 'edge';
-export const size = { width: 32, height: 32 };
 export const contentType = 'image/png';
 
-export default function Icon() {
+/**
+ * Three sizes from one drawing: 32 for the tab, 192 and 512 for an install.
+ * The manifest used to name only the 32px one, which is below what Android
+ * accepts for an install, so the browser never offered to install the app.
+ * Served at /icon/32, /icon/192 and /icon/512.
+ */
+const SIZES = [32, 192, 512] as const;
+
+export function generateImageMetadata() {
+  return SIZES.map((edge) => ({
+    id: String(edge),
+    size: { width: edge, height: edge },
+    contentType,
+  }));
+}
+
+export default async function Icon({ id }: { id: Promise<string> }) {
+  const edge = Number(await id);
   return new ImageResponse(
     <div
       style={{
@@ -42,17 +57,17 @@ export default function Icon() {
         justifyContent: 'center',
         background: tenant.themeColor,
         color: '#FFFFFF',
-        fontSize: 22,
+        fontSize: Math.round(edge * 0.69),
         fontWeight: 700,
         fontFamily: 'sans-serif',
         // A tab favicon is masked to a rounded square by most browsers
         // anyway; rounding it here keeps the corners from being clipped
         // into hard right angles against a dark tab strip.
-        borderRadius: 6,
+        borderRadius: Math.round(edge * 0.1875),
       }}
     >
       {tenant.wordmark.slice(0, 1)}
     </div>,
-    size,
+    { width: edge, height: edge },
   );
 }
