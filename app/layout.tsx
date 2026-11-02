@@ -60,10 +60,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     // data-tenant is the single switch: globals.css keys every operator
     // override off it, so the whole palette changes from this one attribute.
     <html lang={locale} data-tenant={tenant.id}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
       <body>
         {/* First thing in the tab order, visible only when focused. Four steps
             of form is a long way to travel with a keyboard otherwise. */}
